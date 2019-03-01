@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 class UserProfile(models.Model):
     User = models.OneToOneField(User, on_delete=models.CASCADE)
     Signature = models.CharField(max_length=200, null=True)
+    Avatar = models.ImageField(null=True,default=None)
 
 class Topic(models.Model):
     TopicTitle = models.CharField(max_length=100)

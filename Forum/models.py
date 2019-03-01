@@ -21,10 +21,10 @@ class Thread(models.Model):
     PostCount = models.IntegerField()
     DateUpdate = models.DateField()
 
-class Post(models.Model):
+class Comment(models.Model):
     User = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     Thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
-    PostBody = models.CharField(max_length=1000)
+    CommentBody = models.CharField(max_length=1000)
     DateCreated = models.DateTimeField(auto_now=True)
 
 class FriendConnection(models.Model):

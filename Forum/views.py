@@ -11,11 +11,6 @@ class UserProfileListView(generic.ListView):
   template_name = 'user_profile/index.html'
   context_object_name = 'users'
 
-  def get_queryset(self):
-    return UserProfile.objects.order_by('-id')[::-1]
-
-def user_profile_admin(request):
-  pass
 
 def get_profile(request):
   # if this is a post requestion we need to process the form data
@@ -26,7 +21,10 @@ def get_profile(request):
     if form.is_valid():
       # process the data in form as required
       # redirect to a new URL
-      return HttpResponseRedirect('/submitted/')
+      signature = form.cleaned_data['Signature']
+      avatar = form.cleaned_data['Avatar']
+      UserProfile.updateProfile(request, signature, avatar)
+      return HttpResponseRedirect('/home/')
     else:
       print(form.errors)
 

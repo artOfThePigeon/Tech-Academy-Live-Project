@@ -14,15 +14,13 @@ class UserProfile(models.Model):
       if user.is_authenitcated():
         userID = user.id
         try:
-          UserProfile(User_id=userID, Signature=signature, Avatar=avatar)
+          UserProfile.create(User_id=userID, Signature=signature, Avatar=avatar)
         except:
           # TODO: make a meaningful error message
           print('Something went wrong')
       else:
         # TODO: ask them to register or something
         print("You're not logged in!")
-
-
 
 
     def __str__(self):

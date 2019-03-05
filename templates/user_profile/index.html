@@ -6,7 +6,7 @@
 
  <form action='/Forum/forms' method="POST" class="profile-edit" >
   {% csrf_token %}
-  {{ form }}
+  {{ form.as_ul }}
   <input type="submit" value="Submit">
  </form>
 

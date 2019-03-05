@@ -16,6 +16,7 @@ def register(request):
         u1 = User.objects.create_user(username=username, first_name=first_name, last_name=last_name, email=email, password=password, date_joined=date_joined) 
         u1.save() 
 
-        return redirect('login')
+        #return redirect('') Can redirect to a site here when one is available.
+        return render(request, 'Accounts/register.html')
     else:
         return render(request, 'Accounts/register.html')

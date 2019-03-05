@@ -7,12 +7,28 @@ class UserProfile(models.Model):
     Signature = models.CharField(max_length=200, null=True)
     Avatar = models.ImageField(null=True,default=None)
 
-    def QuerySet(self):
-      return list.reverse(UserProfile.objects.order_by(self.id))
+    # We need to see if the user is logged in before they update their profile.
+    @classmethod
+    def updateProfile(request, signature, avatar):
+      user = request.user
+      if user.is_authenitcated():
+        userID = user.id
+        try:
+          UserProfile(User_id=userID, Signature=signature, Avatar=avatar)
+        except:
+          # TODO: make a meaningful error message
+          print('Something went wrong')
+      else:
+        # TODO: ask them to register or something
+        print("You're not logged in!")
+
+
 
 
     def __str__(self):
-        return '{}: {}'.format(self.id, self.User)
+        """String for replacing the default 'UserProfile object 1' formatting """
+        return self.User.username
+
 
 class Topic(models.Model):
     TopicTitle = models.CharField(max_length=100)

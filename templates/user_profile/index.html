@@ -1,0 +1,13 @@
+{% extends 'admin/base_generic.html' %}
+
+
+{% block content %}
+
+
+ <form action='/Forum/forms' method="POST" class="profile-edit" >
+  {% csrf_token %}
+  {{ form }}
+  <input type="submit" value="Submit">
+ </form>
+
+{% endblock %}

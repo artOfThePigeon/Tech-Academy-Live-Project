@@ -1,10 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class UserProfile(models.Model):
     User = models.OneToOneField(User, on_delete=models.CASCADE)
     Signature = models.CharField(max_length=200, null=True)
     Avatar = models.ImageField(null=True,default=None)
+
+    def QuerySet(self):
+      return list.reverse(UserProfile.objects.order_by(self.id))
+
+
+    def __str__(self):
+        return '{}: {}'.format(self.id, self.User)
 
 class Topic(models.Model):
     TopicTitle = models.CharField(max_length=100)
@@ -38,9 +46,3 @@ class Message(models.Model):
     Subject = models.CharField(max_length=50)
     MessageBody = models.CharField(max_length=1000)
     DateSent = models.DateTimeField(auto_now=True)
-
-
-
-
-
-

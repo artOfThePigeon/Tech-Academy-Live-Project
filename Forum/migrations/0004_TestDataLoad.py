@@ -27,11 +27,12 @@ def load_data(apps, schema_editor):
             is_staff=True if i > 16 else False,
             is_active=True if i > 1 else False,
             date_joined=timezone.now(),
+            last_login=timezone.now(),
         )
         user.save()
         userData[i] = {
             'id': user.id,
-            }
+        }
 
     # Instantiate and create 20 UserProfiles for the users created above.
     UserProfile = apps.get_model('Forum', 'UserProfile')

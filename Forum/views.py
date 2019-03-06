@@ -21,6 +21,7 @@ def get_profile(request):
     if form.is_valid():
       # process the data in form as required
       # redirect to a new URL
+      form = form.cleaned_data
       UserProfile.updateProfile(request, form)
       # form.save()
       return HttpResponseRedirect('/home/')

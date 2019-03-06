@@ -5,8 +5,11 @@ from django.contrib.auth.models import User
 class UserProfile(models.Model):
     User = models.OneToOneField(User, on_delete=models.CASCADE)
     Signature = models.CharField(max_length=200, null=True)
-    Avatar = models.ImageField(upload_to = 'user_avatar/',
-      default = 'pic_folder/None/no-img.jpb', null=True)
+    Avatar = models.ImageField(upload_to = 'avatar', blank=True, default='default-avatar.png')
+
+    def __str__(self):
+        """String for replacing the default 'UserProfile object 1' formatting """
+        return f'{self.User.username} Profile'
 
     # We need to see if the user is logged in before they update their profile.
     @classmethod
@@ -14,24 +17,27 @@ class UserProfile(models.Model):
       user = request.user
       if user.is_authenticated:
         userID = user.id
-        sig = form.Signature
-        avatar = form.Avatar
-
+        sig = form['Signature']
+        avatar = request.FILES
+        print(avatar)
         try:
           UserProfile.objects.create(User_id=userID, Signature=sig, Avatar=avatar )
         except:
-          # TODO: make a meaningful error message
-          pass
+          # Update the database
+          profile = UserProfile.objects.get(User_id = userID)
+          profile.Signature = sig
+          profile.Avatar = avatar
+          profile.save()
 
       else:
         # TODO: ask them to register or something
         print("You're not logged in!")
 
 
-    def __str__(self):
-        """String for replacing the default 'UserProfile object 1' formatting """
-        return self.User.username
 
+# Trying to upload the avatar file
+class ImageFile(models.Model):
+    img_file = models.ImageField(upload_to='avatars/%Y/%m/%d')
 
 class Topic(models.Model):
     TopicTitle = models.CharField(max_length=100)

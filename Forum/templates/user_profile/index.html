@@ -1,13 +1,19 @@
 {% extends 'admin/base_generic.html' %}
 
 
+{% block head %}
+  <title>{{user.username}}</title>
+{% endblock %}
+
+
 {% block content %}
 
-
+<div class="container">
+  <img src="{{ user.userprofile.Avatar.url }} " width="240" alt="">
  <form  method="POST" class="profile-edit" >
   {% csrf_token %}
   {{ form.as_ul }}
   <input type="submit" value="Submit">
  </form>
-
+</div>
 {% endblock %}

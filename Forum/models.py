@@ -5,16 +5,18 @@ from django.contrib.auth.models import User
 class UserProfile(models.Model):
     User = models.OneToOneField(User, on_delete=models.CASCADE)
     Signature = models.CharField(max_length=200, null=True)
-    Avatar = models.ImageField(null=True,default=None)
+    Avatar = models.ImageField(upload_to = 'user_avatar/',
+      default = 'pic_folder/None/no-img.jpb', null=True)
 
     # We need to see if the user is logged in before they update their profile.
     @classmethod
-    def updateProfile(request, form):
+    def updateProfile(self, request, form):
       user = request.user
       if user.is_authenitcated():
         userID = user.id
+
         try:
-          UserProfile.create(User_id=userID, Signature=signature, Avatar=avatar)
+          UserProfile.create(User_id=userID )
         except:
           # TODO: make a meaningful error message
           print('Something went wrong')

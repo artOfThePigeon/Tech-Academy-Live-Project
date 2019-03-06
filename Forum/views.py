@@ -16,12 +16,13 @@ def get_profile(request):
   # if this is a post requestion we need to process the form data
   if request.method == 'POST':
     # create a form instance and populate it with data from the request
-    form = ProfileForm(request.POST, request.FILES)
+    form = ProfileForm(request.POST or None, request.FILES or None)
     # check if valid
     if form.is_valid():
       # process the data in form as required
       # redirect to a new URL
       UserProfile.updateProfile(request, form)
+      # form.save()
       return HttpResponseRedirect('/home/')
     else:
       print(form.errors)

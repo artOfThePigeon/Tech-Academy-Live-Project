@@ -9,7 +9,7 @@ def user_directory_path(instance, filename):
 class UserProfile(models.Model):
     User = models.OneToOneField(User, on_delete=models.CASCADE)
     Signature = models.CharField(max_length=200, null=True)
-    Avatar = models.ImageField(upload_to = user_directory_path, blank=True, default='default-avatar.png')
+    Avatar = models.ImageField(upload_to = user_directory_path, blank=True, default='avatar/default-avatar.png')
 
     def __str__(self):
         """String for replacing the default 'UserProfile object 1' formatting """
@@ -18,13 +18,13 @@ class UserProfile(models.Model):
     # We need to see if the user is logged in before they update their profile.
     @classmethod
     def updateProfile(self, request, form):
+      # TODO: Use default avatar when no file is uploaded
+      # TODO: Delete old profile pics or reuse old pictures
       user = request.user
       if user.is_authenticated:
         userID = user.id
         sig = form['Signature']
         avatar = request.FILES['Avatar']
-        print(dir(avatar))
-        print(avatar)
         try:
           UserProfile.objects.create(User=User.objects.get(User_id=userID), Signature=sig, Avatar=avatar )
         except:

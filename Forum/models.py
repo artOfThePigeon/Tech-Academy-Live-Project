@@ -2,10 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+def user_directory_path(instance, filename):
+  #file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+  return 'avatar/user_{0}/{1}'.format(instance.User.id, filename)
 class UserProfile(models.Model):
     User = models.OneToOneField(User, on_delete=models.CASCADE)
     Signature = models.CharField(max_length=200, null=True)
-    Avatar = models.ImageField(upload_to = 'avatar', blank=True, default='default-avatar.png')
+    Avatar = models.ImageField(upload_to = user_directory_path, blank=True, default='default-avatar.png')
 
     def __str__(self):
         """String for replacing the default 'UserProfile object 1' formatting """
@@ -18,10 +21,11 @@ class UserProfile(models.Model):
       if user.is_authenticated:
         userID = user.id
         sig = form['Signature']
-        avatar = request.FILES
+        avatar = request.FILES['Avatar']
+        print(dir(avatar))
         print(avatar)
         try:
-          UserProfile.objects.create(User_id=userID, Signature=sig, Avatar=avatar )
+          UserProfile.objects.create(User=User.objects.get(User_id=userID), Signature=sig, Avatar=avatar )
         except:
           # Update the database
           profile = UserProfile.objects.get(User_id = userID)

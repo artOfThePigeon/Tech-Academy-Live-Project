@@ -12,14 +12,17 @@ class UserProfile(models.Model):
     @classmethod
     def updateProfile(self, request, form):
       user = request.user
-      if user.is_authenitcated():
+      if user.is_authenticated:
         userID = user.id
+        sig = form.Signature
+        avatar = form.Avatar
 
         try:
-          UserProfile.create(User_id=userID )
+          UserProfile.objects.create(User_id=userID, Signature=sig, Avatar=avatar )
         except:
           # TODO: make a meaningful error message
-          print('Something went wrong')
+          pass
+
       else:
         # TODO: ask them to register or something
         print("You're not logged in!")

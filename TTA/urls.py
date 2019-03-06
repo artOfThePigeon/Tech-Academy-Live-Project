@@ -20,5 +20,5 @@ from Forum import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     # Fix urls
-    path('user_profile/', views.get_profile, name='users'),
+    path('', include('Forum.urls')),
 ]

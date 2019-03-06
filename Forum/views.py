@@ -16,19 +16,20 @@ def get_profile(request):
   # if this is a post requestion we need to process the form data
   if request.method == 'POST':
     # create a form instance and populate it with data from the request
-    form = ProfileForm(request.POST)
+    form = ProfileForm(request.POST, request.FILES)
     # check if valid
     if form.is_valid():
       # process the data in form as required
       # redirect to a new URL
-      signature = form.cleaned_data['Signature']
-      avatar = form.cleaned_data['Avatar']
-      UserProfile.updateProfile(request, signature, avatar)
+      UserProfile.updateProfile(request, form)
       return HttpResponseRedirect('/home/')
     else:
       print(form.errors)
 
   else:
     form = ProfileForm()
+  context = {
+    'form' : form,
+  }
 
-  return render(request, 'user_profile/index.html', {'form': form})
+  return render(request, 'user_profile/index.html', context)

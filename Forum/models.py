@@ -9,7 +9,7 @@ class UserProfile(models.Model):
 
     # We need to see if the user is logged in before they update their profile.
     @classmethod
-    def updateProfile(request, signature, avatar):
+    def updateProfile(request, form):
       user = request.user
       if user.is_authenitcated():
         userID = user.id

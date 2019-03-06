@@ -6,5 +6,5 @@ from . import views
 
 app_name = 'Forum'
 urlpatterns = [
-  path('profile', views.get_profile, name='get_profile')
+  path('profile/', views.get_profile, name='get_profile')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

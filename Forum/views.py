@@ -23,7 +23,7 @@ def get_profile(request):
       # redirect to a new URL
       form = form.cleaned_data
       UserProfile.updateProfile(request, form)
-      return HttpResponseRedirect('/home/')
+      return HttpResponseRedirect('')
     else:
       print(form.errors)
 

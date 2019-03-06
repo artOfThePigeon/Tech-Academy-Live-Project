@@ -10,7 +10,7 @@
 
 <div class="container">
   <img src="{{ user.userprofile.Avatar.url }} " width="240" alt="">
- <form  method="POST" class="profile-edit" >
+ <form  method="POST" class="profile-edit" enctype="multipart/form-data">
   {% csrf_token %}
   {{ form.as_ul }}
   <input type="submit" value="Submit">

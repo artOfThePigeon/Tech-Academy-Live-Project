@@ -10,7 +10,7 @@ class ProfileForm(forms.Form):
     model = UserProfile
     fields = ('Signature', 'Avatar')
 
-
+# Extends the base UserCreationForm
 class SignUpForm(UserCreationForm):
   first_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
   last_name = forms.CharField(max_length=30, required=False, help_text='Optional.')

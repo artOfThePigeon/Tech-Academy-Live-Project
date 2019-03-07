@@ -1,10 +1,8 @@
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render_to_response, render, redirect
 from django.views import generic
-from django.http import HttpResponseRedirect, render, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
-from django.shortcuts import render
 from django.contrib.auth.models import User
-from django.shortcuts import redirect
 import datetime
 from .models import Comment, UserProfile, Topic, Thread
 

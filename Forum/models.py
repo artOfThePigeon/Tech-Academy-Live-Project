@@ -39,7 +39,6 @@ class UserProfile(models.Model):
         print("You're not logged in!")
 
 
-
 # Trying to upload the avatar file
 class ImageFile(models.Model):
     img_file = models.ImageField(upload_to='avatars/%Y/%m/%d')

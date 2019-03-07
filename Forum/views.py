@@ -2,27 +2,33 @@ from django.shortcuts import render_to_response, render, redirect
 from django.views import generic
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
 import datetime
 from .models import Comment, UserProfile, Topic, Thread
 
-from .forms import ProfileForm
+from .forms import ProfileForm, SignUpForm
 from .models import UserProfile
 # Create your views here.
 
+@login_required
 def home_view(request):
     #collect data for latest 10 threads on homepage
-   data = Thread.objects.values().order_by('-DateUpdate')[:10] 
+   data = Thread.objects.values().order_by('-DateUpdate')[:10]
    #convert to dictionary to pass variable
-   threads = {"threads" : data}       
+   threads = {"threads" : data}
    return render(request, 'index.html', threads)
+
+
 class UserProfileListView(generic.ListView):
   template_name = 'user_profile/index.html'
   context_object_name = 'users'
 
 
 def get_profile(request):
-  # if this is a post requestion we need to process the form data
+  # if this is a post request we need to process the form data
   if request.method == 'POST':
     # create a form instance and populate it with data from the request
     form = ProfileForm(request.POST or None, request.FILES or None)
@@ -47,17 +53,15 @@ def get_profile(request):
 
 def register(request):
     if request.method == 'POST':
-
-        username = request.POST.get('username') 
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        date_joined = datetime.datetime.now()
-        u1 = User.objects.create_user(username=username, first_name=first_name, last_name=last_name, email=email, password=password, date_joined=date_joined)
-        u1.save()
-
-        return redirect('home_view')
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+          user = form.save()
+          user.refresh_from_db()
+          UserProfile.objects.create(User_id=user.pk)
+          raw_password = form.cleaned_data.get('password1')
+          user = authenticate(username=user.username, password=raw_password)
+          login(request, user)
+          return redirect('home_view')
     else:
-        return render(request, 'Accounts/register.html')
-
+      form = SignUpForm()
+    return render(request, 'Accounts/register.html', {'form': form})

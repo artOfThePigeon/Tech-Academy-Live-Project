@@ -17,12 +17,12 @@
       </div>
     </div>
     {% for thread in threads %}
-       <a href="#">       <span class="glyphicon glyphicon-file"></span>&nbsp;{{ thread.ThreadTitle }}, active on {{ thread.DateUpdate }}</a>
+       <a href="#"><span class="glyphicon glyphicon-file"></span>&nbsp;{{ thread.ThreadTitle }}, active on {{ thread.DateUpdate }}</a>
        <br>
     {% endfor %}
     {% block content %}
 
     {% endblock %}
-
+</div>
 </body>
 </html>

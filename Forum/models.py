@@ -18,20 +18,20 @@ class UserProfile(models.Model):
     # We need to see if the user is logged in before they update their profile.
     @classmethod
     def updateProfile(self, request, form):
-      # TODO: Use default avatar when no file is uploaded
       # TODO: Delete old profile pics or reuse old pictures
       user = request.user
       if user.is_authenticated:
         userID = user.id
         sig = form['Signature']
-        avatar = request.FILES['Avatar']
+        avatar = request.FILES['Avatar'] if 'Avatar' in request.FILES else False
         try:
           UserProfile.objects.create(User=User.objects.get(User_id=userID), Signature=sig, Avatar=avatar )
         except:
           # Update the database
           profile = UserProfile.objects.get(User_id = userID)
           profile.Signature = sig
-          profile.Avatar = avatar
+          if avatar != False:
+            profile.Avatar = avatar
           profile.save()
 
       else:

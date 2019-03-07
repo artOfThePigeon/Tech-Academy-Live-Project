@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from TTA import settings
 import os
 
@@ -49,7 +51,6 @@ class UserProfile(models.Model):
       else:
         #  ask them to register (or login?) if their user doesn't authenticate
         HttpResponseRedirect('/register/')
-
 
 
 class Topic(models.Model):

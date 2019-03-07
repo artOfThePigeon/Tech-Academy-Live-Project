@@ -4,7 +4,7 @@
 <h2> Register a new user:</h2>
 
 <div>
-    <form action="{% url 'register' %}" method="POST">
+    <form action="{% url "register" %}" method="POST">
         {% csrf_token %}
 
         <div class="container">

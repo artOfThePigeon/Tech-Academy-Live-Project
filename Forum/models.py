@@ -51,9 +51,6 @@ class UserProfile(models.Model):
         HttpResponseRedirect('/register/')
 
 
-# Trying to upload the avatar file
-class ImageFile(models.Model):
-    img_file = models.ImageField(upload_to='avatars/%Y/%m/%d')
 
 class Topic(models.Model):
     TopicTitle = models.CharField(max_length=100)

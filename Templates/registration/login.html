@@ -1,0 +1,13 @@
+
+{% block title %}| Login Page{% endblock %} <!-- This will appear in the browser tab -->
+
+{% block content %} <!-- placement of content based upon tags in base.html-->
+<h3>User Login</h3>
+
+    <form method="post">
+        {% csrf_token %} <!-- prevent cross-site hackzors -->
+        {{ form.as_p }} 
+        <button type="submit">Login</button>
+    </form>
+
+{% endblock %}

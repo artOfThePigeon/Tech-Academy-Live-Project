@@ -8,4 +8,5 @@ app_name = 'Forum'
 urlpatterns = [
   path('register/', views.register, name='register'),
   path('profile/', views.get_profile, name='get_profile'),
+  path('topics/', views.TopicsView.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

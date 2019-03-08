@@ -6,6 +6,9 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
+from itertools import chain, groupby
+from django.db import connection
+from collections import namedtuple
 import datetime
 from .models import Comment, UserProfile, Topic, Thread
 
@@ -13,6 +16,23 @@ from .forms import ProfileForm, SignUpForm
 from .models import UserProfile
 # Create your views here.
 
+
+# Helper Fucntions
+def dictfetchall(query):
+    "Return all rows from a cursor as a dict"
+    with connection.cursor() as cursor:
+      cursor.execute(query)
+      columns = [col[0] for col in cursor.description]
+      for col in columns:
+        print(col)
+      return [
+          dict(zip(columns, row))
+          for row in cursor.fetchall()
+    ]
+
+
+
+# Account Views
 @login_required
 def home_view(request):
     #collect data for latest 10 threads on homepage
@@ -65,3 +85,21 @@ def register(request):
     else:
       form = SignUpForm()
     return render(request, 'Accounts/register.html', {'form': form})
+
+
+# Forum views
+class TopicsView(generic.ListView):
+  model = Topic
+  template_name = 'topics.html'
+
+  def get_queryset(self):
+    return dictfetchall('''SELECT Forum_thread.id as thread_id,
+                            Forum_topic.TopicTitle as "topic_title",
+                            ThreadTitle as thread_title,
+                            Forum_topic.ThreadCount as thread_count,
+                            MAX(Forum_thread.DateUpdate) as update_date
+                            FROM Forum_thread
+                            INNER JOIN Forum_topic
+                            ON Forum_topic.id = Forum_thread.Topic_id
+                            GROUP BY Topic_id
+                            ORDER BY Forum_topic.id ASC''')

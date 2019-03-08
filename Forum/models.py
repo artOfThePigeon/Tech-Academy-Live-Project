@@ -68,6 +68,9 @@ class Thread(models.Model):
     PostCount = models.IntegerField()
     DateUpdate = models.DateField()
 
+    class Meta:
+      ordering = ['-DateUpdate']
+
 class Comment(models.Model):
     User = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     Thread = models.ForeignKey(Thread, on_delete=models.CASCADE)

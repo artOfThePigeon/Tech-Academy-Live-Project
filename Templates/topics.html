@@ -5,12 +5,14 @@
     <th>Topic Title</th>
     <th>Date Updated</th>
     <th>Thread Count</th>
+    <th>Latest Thread</th>
   </tr>
-{% for topic in object_list %}
+{% for topic in object_list  %}
   <tr>
     <td>{{ topic.TopicTitle }}</td>
     <td>{{ topic.DateUpdated }}</td>
     <td>{{ topic.ThreadCount }}</td>
+    <td>{{ topic.my_context }}</td>
   </tr>
 {% endfor %}
 </table>

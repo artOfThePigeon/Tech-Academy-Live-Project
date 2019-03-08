@@ -76,5 +76,19 @@ class TopicsView(generic.ListView):
   model = Topic
   template_name = 'topics.html'
 
+
+  def get_context_data(self, **kwargs):
+    # Call the base implementation first to get a context
+    context = super().get_context_data(**kwargs)
+    # Add in a QuerySet of all the books
+    context['threads'] = Thread.get_latest_thread
+    print((context.get('threads')))
+    return context
+
   def get_queryset(self):
     return Topic.objects.order_by('DateUpdated')
+
+  def latest_topics(request, *args, **kwargs):
+    my_context = Thread.get_latest_thread
+
+    return render(request, 'topics.html', my_context)

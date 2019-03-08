@@ -2,29 +2,55 @@ from django.shortcuts import render_to_response, render, redirect
 from django.views import generic
 from django.http import HttpResponseRedirect, HttpRequest, HttpResponse
 from django.template import RequestContext
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from itertools import chain, groupby
+from django.db import connection
+from collections import namedtuple
 import datetime
 from .models import Comment, UserProfile, Topic, Thread, Message, FriendConnection
 from django.db.models import Q
 from functools import reduce
 
-from .forms import ProfileForm
+from .forms import ProfileForm, SignUpForm
 from .models import UserProfile
 # Create your views here.
 
+
+# Helper Fucntions
+def dictfetchall(query):
+    "Return all rows from a cursor as a dict"
+    with connection.cursor() as cursor:
+      cursor.execute(query)
+      columns = [col[0] for col in cursor.description]
+      for col in columns:
+        print(col)
+      return [
+          dict(zip(columns, row))
+          for row in cursor.fetchall()
+    ]
+
+
+
+# Account Views
+@login_required
 def home_view(request):
     #collect data for latest 10 threads on homepage
-   data = Thread.objects.values().order_by('-DateUpdate')[:10] 
+   data = Thread.objects.values().order_by('-DateUpdate')[:10]
    #convert to dictionary to pass variable
-   threads = {"threads" : data}       
+   threads = {"threads" : data}
    return render(request, 'index.html', threads)
+
+
 class UserProfileListView(generic.ListView):
   template_name = 'user_profile/index.html'
   context_object_name = 'users'
 
 
 def get_profile(request):
-  # if this is a post requestion we need to process the form data
+  # if this is a post request we need to process the form data
   if request.method == 'POST':
     # create a form instance and populate it with data from the request
     form = ProfileForm(request.POST or None, request.FILES or None)
@@ -49,19 +75,24 @@ def get_profile(request):
 
 def register(request):
     if request.method == 'POST':
-
-        username = request.POST.get('username') 
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        date_joined = datetime.datetime.now()
-        u1 = User.objects.create_user(username=username, first_name=first_name, last_name=last_name, email=email, password=password, date_joined=date_joined)
-        u1.save()
-
-        return redirect('home_view')
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+          user = form.save()
+          user.refresh_from_db()
+          UserProfile.objects.create(User_id=user.pk)
+          raw_password = form.cleaned_data.get('password1')
+          user = authenticate(username=user.username, password=raw_password)
+          login(request, user)
+          return redirect('home_view')
     else:
-        return render(request, 'Accounts/register.html')
+      form = SignUpForm()
+    return render(request, 'Accounts/register.html', {'form': form})
+
+
+# Forum views
+class TopicsView(generic.ListView):
+  model = Topic
+  template_name = 'topics.html'
 
 # Messaging
 def message(request):
@@ -144,3 +175,14 @@ def messagedetails(request):
     
     # Return the list of messages to the template to be placed
     return render(request, 'Message/messagedetails.html', {'messages': messages})
+  def get_queryset(self):
+    return dictfetchall('''SELECT Forum_thread.id as thread_id,
+                            Forum_topic.TopicTitle as "topic_title",
+                            ThreadTitle as thread_title,
+                            Forum_topic.ThreadCount as thread_count,
+                            MAX(Forum_thread.DateUpdate) as update_date
+                            FROM Forum_thread
+                            INNER JOIN Forum_topic
+                            ON Forum_topic.id = Forum_thread.Topic_id
+                            GROUP BY Topic_id
+                            ORDER BY Forum_topic.id ASC''')

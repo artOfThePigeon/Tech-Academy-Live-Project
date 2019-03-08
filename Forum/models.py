@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from TTA import settings
 import os
 
@@ -51,7 +53,6 @@ class UserProfile(models.Model):
         HttpResponseRedirect('/register/')
 
 
-
 class Topic(models.Model):
     TopicTitle = models.CharField(max_length=100)
     DateUpdated = models.DateField()
@@ -66,6 +67,9 @@ class Thread(models.Model):
     DateStarted = models.DateField()
     PostCount = models.IntegerField()
     DateUpdate = models.DateField()
+
+    class Meta:
+      ordering = ['-DateUpdate']
 
 class Comment(models.Model):
     User = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)

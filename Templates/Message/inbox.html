@@ -1,0 +1,21 @@
+ <!-- Rendering our content inside of the base.html template -->
+ {% extends 'base.html' %}
+
+{% block title %}Inbox{% endblock %}
+
+{% block content %} <!-- Where the content will be placed in the base.html -->
+ 
+<!-- Cross-site request forgery protection functionality is available because our function in views.py returns a render method -->
+{% csrf_token %} 
+<h2> Messages</h2>
+
+<!-- Placing the messages in an ordered list -->
+<content>
+    <ol>
+    {% for item in messages %}
+        <li><a href="/home/msg_detail?message_id={{ item.id }}">From: {{ item.SendingUser.username }}</a></li>
+        <br>Date: {{ item.DateSent}}</li>
+    {% endfor %}
+    </ol>
+</content>   
+{% endblock %}

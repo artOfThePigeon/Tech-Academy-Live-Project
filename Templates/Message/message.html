@@ -1,0 +1,33 @@
+ <!-- Rendering our content inside of the base.html template -->
+ {% extends 'base.html' %}
+
+{% block title %}Message{% endblock %} 
+
+{% block content %} <!-- Where the content will be placed in the base.html -->
+<h1>Send a friend a message</h1>
+         
+<form method="POST"> <!-- Stating that this form is to Post data to the db -->
+
+    <!-- Cross-site request forgery protection functionality is available because our function in views.py returns a render method -->
+    {% csrf_token %} 
+
+    <!-- Each input field name attribute will be referenced in the views function --> 
+    <div>
+        <label for="reciever">To(Select friend to send a message to)</label>
+
+        <!--- creating a selection box based upon names in the list of the users freinds --->
+        <select id = "reciever" name="reciever">
+            {% for i in receiver_choices %}
+            <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div>
+        <label for="content" >Message</label><br>
+        <input type="text" name="content" required>
+    </div>
+
+    <br><button type="submit">Send Message</button>
+    </form>
+{% endblock %} 

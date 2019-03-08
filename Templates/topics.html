@@ -1,0 +1,17 @@
+{% include 'base.html' %}
+{% block content %}
+<table>
+  <tr>
+    <th>Topic Title</th>
+    <th>Date Updated</th>
+    <th>Thread Count</th>
+  </tr>
+{% for topic in object_list %}
+  <tr>
+    <td>{{ topic.TopicTitle }}</td>
+    <td>{{ topic.DateUpdated }}</td>
+    <td>{{ topic.ThreadCount }}</td>
+  </tr>
+{% endfor %}
+</table>
+{% endblock %}

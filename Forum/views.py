@@ -13,6 +13,10 @@ from .forms import ProfileForm, SignUpForm
 from .models import UserProfile
 # Create your views here.
 
+
+
+
+# Account Views
 @login_required
 def home_view(request):
     #collect data for latest 10 threads on homepage
@@ -65,3 +69,12 @@ def register(request):
     else:
       form = SignUpForm()
     return render(request, 'Accounts/register.html', {'form': form})
+
+
+# Forum views
+class TopicsView(generic.ListView):
+  model = Topic
+  template_name = 'topics.html'
+
+  def get_queryset(self):
+    return Topic.objects.order_by('DateUpdated')

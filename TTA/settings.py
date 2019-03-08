@@ -128,4 +128,5 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'Assets'),
 ]
 
+# Setting the destination for a succesful log-in
 LOGIN_REDIRECT_URL = '/'

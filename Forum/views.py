@@ -175,14 +175,14 @@ def messagedetails(request):
     
     # Return the list of messages to the template to be placed
     return render(request, 'Message/messagedetails.html', {'messages': messages})
-  def get_queryset(self):
-    return dictfetchall('''SELECT Forum_thread.id as thread_id,
-                            Forum_topic.TopicTitle as "topic_title",
-                            ThreadTitle as thread_title,
-                            Forum_topic.ThreadCount as thread_count,
-                            MAX(Forum_thread.DateUpdate) as update_date
-                            FROM Forum_thread
-                            INNER JOIN Forum_topic
-                            ON Forum_topic.id = Forum_thread.Topic_id
-                            GROUP BY Topic_id
-                            ORDER BY Forum_topic.id ASC''')
+def get_queryset(self):
+  return dictfetchall('''SELECT Forum_thread.id as thread_id,
+                          Forum_topic.TopicTitle as "topic_title",
+                          ThreadTitle as thread_title,
+                          Forum_topic.ThreadCount as thread_count,
+                          MAX(Forum_thread.DateUpdate) as update_date
+                          FROM Forum_thread
+                          INNER JOIN Forum_topic
+                          ON Forum_topic.id = Forum_thread.Topic_id
+                          GROUP BY Topic_id
+                          ORDER BY Forum_topic.id ASC''')

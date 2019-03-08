@@ -68,16 +68,6 @@ class Thread(models.Model):
     PostCount = models.IntegerField()
     DateUpdate = models.DateField()
 
-    def get_latest_thread(self):
-      threads = Thread.objects.all()
-      threads_joined = threads.select_related('Topic')
-      length = len(Topic.objects.all())
-      list_of_thread_titles = {}
-      for i in range(length):
-        print(dir(i))
-        list_of_thread_titles[i] = threads_joined.filter(Topic_id = (i + 1)).latest('DateUpdate').id
-        Topic.objects.get(id=id)
-
     class Meta:
       ordering = ['-DateUpdate']
 

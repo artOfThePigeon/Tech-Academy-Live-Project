@@ -97,9 +97,9 @@ class TopicsView(generic.ListView):
                             Forum_topic.TopicTitle as "topic_title",
                             ThreadTitle as thread_title,
                             Forum_topic.ThreadCount as thread_count,
-                            Forum_thread.DateUpdate as update_date
+                            MAX(Forum_thread.DateUpdate) as update_date
                             FROM Forum_thread
                             INNER JOIN Forum_topic
                             ON Forum_topic.id = Forum_thread.Topic_id
                             GROUP BY Topic_id
-                            ORDER BY Forum_thread.DateUpdate DESC''')
+                            ORDER BY Forum_topic.id ASC''')

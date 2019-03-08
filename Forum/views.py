@@ -25,8 +25,6 @@ def dictfetchall(query):
     with connection.cursor() as cursor:
       cursor.execute(query)
       columns = [col[0] for col in cursor.description]
-      for col in columns:
-        print(col)
       return [
           dict(zip(columns, row))
           for row in cursor.fetchall()
@@ -94,9 +92,21 @@ class TopicsView(generic.ListView):
   model = Topic
   template_name = 'topics.html'
 
+  def get_queryset(self):
+    return dictfetchall('''SELECT Forum_thread.id as thread_id,
+                            Forum_topic.TopicTitle as "topic_title",
+                            ThreadTitle as thread_title,
+                            Forum_topic.ThreadCount as thread_count,
+                            MAX(Forum_thread.DateUpdate) as update_date
+                            FROM Forum_thread
+                            INNER JOIN Forum_topic
+                            ON Forum_topic.id = Forum_thread.Topic_id
+                            GROUP BY Topic_id
+                            ORDER BY Forum_topic.id ASC''')
+
 # Messaging
 def message(request):
-    
+
     user = request.user
 
     if request.method == 'POST':
@@ -105,13 +115,13 @@ def message(request):
         content = request.POST['content']
         reciever = request.POST['reciever']
 
-        
+
         reciever_used = User.objects.get(username=reciever)# Gets the username of the receiver from the db
         sender_used = user # Sender is current user
 
         message = Message() # Creating connection to the db
         # Setting respective table fields to template content
-        message.MessageBody = content 
+        message.MessageBody = content
         message.ReceivingUser = reciever_used
         message.SendingUser = sender_used
         message.save() # Saving to the db
@@ -122,7 +132,7 @@ def message(request):
     else:
 
         # Query the FriendConnection table to get the ids of current users friends
-        friend_list = FriendConnection.objects.filter((Q(ReceivingUser=user) | Q(SendingUser=user))& Q(IsConfirmed=True)) 
+        friend_list = FriendConnection.objects.filter((Q(ReceivingUser=user) | Q(SendingUser=user))& Q(IsConfirmed=True))
         # Create a list of friends user ids
         friend_ids = list(friend_list.values('ReceivingUser_id'))
         receiver_id_list = [] # Empty list for the ids
@@ -130,7 +140,7 @@ def message(request):
         # Iterate through the list, appending the user ids
         for id in friend_ids:
             receiver_id_list.append(id['ReceivingUser_id'])
-            
+
         receiver_name_list = [] # Empty list for the receiver username
 
         # Iterate through the id list, grabbing the username and appending it to the new empty list
@@ -154,35 +164,24 @@ def inbox(request):
     if request.user.is_authenticated:
         currentUser = request.user.id
         messages = Message.objects.filter(ReceivingUser_id=currentUser).order_by('-DateSent')
-        
+
         # Return messages to be placed in template
         return render(request, 'Message/inbox.html', {'messages': messages})
-    
+
     else:
         return render(request, 'Message/inbox.html', {})
 
 # Message Details (Shows all messages from selected sender)
 def messagedetails(request):
 
-    
+
     currentUser = request.user.id # Set current user
-    message_id = request.GET.get('message_id') # Get the id of the selected message from Main Inbox 
+    message_id = request.GET.get('message_id') # Get the id of the selected message from Main Inbox
     message = Message.objects.get(id=message_id) # Get the message entry from the db
     sendingUser = message.SendingUser.id # Get the sending user id from the db
-    
+
     # Query the db for all messages from selected sender and order decending
     messages = Message.objects.filter(ReceivingUser_id=currentUser, SendingUser_id=sendingUser).order_by('-DateSent')
-    
+
     # Return the list of messages to the template to be placed
     return render(request, 'Message/messagedetails.html', {'messages': messages})
-def get_queryset(self):
-  return dictfetchall('''SELECT Forum_thread.id as thread_id,
-                          Forum_topic.TopicTitle as "topic_title",
-                          ThreadTitle as thread_title,
-                          Forum_topic.ThreadCount as thread_count,
-                          MAX(Forum_thread.DateUpdate) as update_date
-                          FROM Forum_thread
-                          INNER JOIN Forum_topic
-                          ON Forum_topic.id = Forum_thread.Topic_id
-                          GROUP BY Topic_id
-                          ORDER BY Forum_topic.id ASC''')

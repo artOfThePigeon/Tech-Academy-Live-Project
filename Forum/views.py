@@ -6,6 +6,9 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
+from itertools import chain, groupby
+from django.db import connection
+from collections import namedtuple
 import datetime
 from .models import Comment, UserProfile, Topic, Thread
 
@@ -13,6 +16,19 @@ from .forms import ProfileForm, SignUpForm
 from .models import UserProfile
 # Create your views here.
 
+
+# Helper Fucntions
+def dictfetchall(query):
+    "Return all rows from a cursor as a dict"
+    with connection.cursor() as cursor:
+      cursor.execute(query)
+      columns = [col[0] for col in cursor.description]
+      for col in columns:
+        print(col)
+      return [
+          dict(zip(columns, row))
+          for row in cursor.fetchall()
+    ]
 
 
 
@@ -76,19 +92,14 @@ class TopicsView(generic.ListView):
   model = Topic
   template_name = 'topics.html'
 
-
-  def get_context_data(self, **kwargs):
-    # Call the base implementation first to get a context
-    context = super().get_context_data(**kwargs)
-    # Add in a QuerySet of all the books
-    context['threads'] = Thread.get_latest_thread
-    print((context.get('threads')))
-    return context
-
   def get_queryset(self):
-    return Topic.objects.order_by('DateUpdated')
-
-  def latest_topics(request, *args, **kwargs):
-    my_context = Thread.get_latest_thread
-
-    return render(request, 'topics.html', my_context)
+    return dictfetchall('''SELECT Forum_thread.id as thread_id,
+                            Forum_topic.TopicTitle as "topic_title",
+                            ThreadTitle as thread_title,
+                            Forum_topic.ThreadCount as thread_count,
+                            Forum_thread.DateUpdate as update_date
+                            FROM Forum_thread
+                            INNER JOIN Forum_topic
+                            ON Forum_topic.id = Forum_thread.Topic_id
+                            GROUP BY Topic_id
+                            ORDER BY Forum_thread.DateUpdate DESC''')

@@ -9,10 +9,10 @@
   </tr>
 {% for topic in object_list  %}
   <tr>
-    <td>{{ topic.topic_title }}</td>
+ 📄 <td>{{ topic.topic_title }}</td>
     <td>{{ topic.update_date }}</td>
     <td>{{ topic.thread_count }}</td>
-    <td>{{ topic.thread_title }}</td>
+ 📄 <td><a href="{% url 'Forum:thread' topic.thread_id %}">{{ topic.thread_title }}</a></td>
   </tr>
 {% endfor %}
 </table>

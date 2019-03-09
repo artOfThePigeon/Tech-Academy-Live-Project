@@ -125,8 +125,6 @@ class CommentThread(generic.ListView):
         context = super(CommentThread, self).get_context_data(**kwargs)
         pk = self.kwargs['pk']
         context['thread'] = Thread.objects.filter(id = pk).last
-        #context['user'] = User.objects.all()
-
         return context
 
 

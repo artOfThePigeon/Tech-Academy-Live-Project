@@ -1,7 +1,8 @@
 <h1>{{ thread.ThreadTitle }}</h1>
 
 {% for comment in comments %}
-<p>{{ comment.User.username }} | {{ comment.DateCreated }}</p><br>
-<p>{{ comment.CommentBody }} </p><br>
-<hr>
+  <img src="{{ comment.User.userprofile.Avatar.url }}" alt="{{ comment.User.username }} Avatar" width="100">
+  <p>{{ comment.User.username }} | {{ comment.DateCreated }}</p><br>
+  <p>{{ comment.CommentBody }} </p><br>
+  <hr>
 {% endfor %}

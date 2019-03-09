@@ -1,0 +1,7 @@
+<h1>{{ thread.ThreadTitle }}</h1>
+
+{% for comment in comments %}
+<p>{{ comment.User.username }} | {{ comment.DateCreated }}</p><br>
+<p>{{ comment.CommentBody }} </p><br>
+<hr>
+{% endfor %}

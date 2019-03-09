@@ -128,23 +128,8 @@ class CommentThread(generic.ListView):
         #context['user'] = User.objects.all()
 
         return context
-    # This gets the username from the user_id
 
-    register = template.Library()
 
-    @register.simple_tag
-    def get_username_from_userid(user_id):
-      '''
-        Which you would use like:
-
-        {% for comment in comments %}
-          {% get_username_from_userid comment.user_id %}
-        {% endfor %}
-      '''
-      try:
-          return User.objects.get(id=user_id).username
-      except User.DoesNotExist:
-          return 'Unknown'
 
 # Messaging
 def message(request):

@@ -114,18 +114,13 @@ class TopicsView(generic.ListView):
 def create_comment(request, slug):
   if request.method == 'POST':
       form = CommentCreateForm(request.POST)
-      print(dir(form.Meta))
-      print(form)
-      print(form.is_valid())
-      print(dir(form))
       if form.is_valid():
           form = form.save(commit=False)
-          print(form)
           thread = Thread.objects.get(id=slug)
           form.User = request.user
           form.Thread = thread
           form.save()
-          return (HttpResponse('Submit successful'))
+          return (HttpResponse('Success!'))
   else:
     return HttpResponseBadRequest()
 

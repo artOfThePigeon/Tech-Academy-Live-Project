@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response, render, redirect
+from django.shortcuts import render_to_response, render, redirect, reverse
 from django.views import generic
 from django.http import HttpResponseRedirect, HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.template import RequestContext
@@ -120,7 +120,7 @@ def create_comment(request, slug):
           form.User = request.user
           form.Thread = thread
           form.save()
-          return (HttpResponse('Success!'))
+          return HttpResponseRedirect("/home/thread/{}/".format(slug))
   else:
     return HttpResponseBadRequest()
 

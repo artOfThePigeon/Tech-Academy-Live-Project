@@ -1,6 +1,6 @@
 from django.shortcuts import render_to_response, render, redirect
 from django.views import generic
-from django.http import HttpResponseRedirect, HttpRequest, HttpResponse
+from django.http import HttpResponseRedirect, HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.template import RequestContext
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
@@ -14,8 +14,9 @@ import datetime
 from .models import Comment, UserProfile, Topic, Thread, Message, FriendConnection
 from django.db.models import Q
 from functools import reduce
+from django.views.generic.edit import FormView, CreateView
 
-from .forms import ProfileForm, SignUpForm
+from .forms import ProfileForm, SignUpForm, CommentCreateForm
 from .models import UserProfile
 # Create your views here.
 
@@ -108,6 +109,26 @@ class TopicsView(generic.ListView):
                             GROUP BY Topic_id
                             ORDER BY Forum_topic.id ASC''')
 
+@login_required
+#@require_http_methods(['POST'])
+def create_comment(request, slug):
+  if request.method == 'POST':
+      form = CommentCreateForm(request.POST)
+      print(dir(form.Meta))
+      print(form)
+      print(form.is_valid())
+      print(dir(form))
+      if form.is_valid():
+          form = form.save(commit=False)
+          print(form)
+          thread = Thread.objects.get(id=slug)
+          form.User = request.user
+          form.Thread = thread
+          form.save()
+          return (HttpResponse('Submit successful'))
+  else:
+    return HttpResponseBadRequest()
+
 
 # Display the comments of a thread
 class CommentThread(generic.ListView):
@@ -115,6 +136,7 @@ class CommentThread(generic.ListView):
     context_object_name = 'comments'
     paginated_by = 10
     ordering = ['-DateCreated']
+
 
     def get_queryset(self, *args, **kwargs):
         pk = self.kwargs['pk']
@@ -125,8 +147,9 @@ class CommentThread(generic.ListView):
         context = super(CommentThread, self).get_context_data(**kwargs)
         pk = self.kwargs['pk']
         context['thread'] = Thread.objects.filter(id = pk).last
-        return context
+        context['form'] = CommentCreateForm()
 
+        return context
 
 
 # Messaging

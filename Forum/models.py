@@ -77,7 +77,6 @@ class Comment(models.Model):
     CommentBody = models.CharField(max_length=1000)
     DateCreated = models.DateTimeField(auto_now=True)
 
-
 class FriendConnection(models.Model):
     ReceivingUser = models.ForeignKey(User,related_name="FriendReceiver", on_delete=models.CASCADE)
     SendingUser = models.ForeignKey(User,related_name="FriendSender", on_delete=models.CASCADE)

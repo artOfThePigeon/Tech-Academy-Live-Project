@@ -1,6 +1,6 @@
 from django.shortcuts import render_to_response, render, redirect, reverse
 from django.views import generic
-from django.http import HttpResponseRedirect, HttpRequest, HttpResponse
+from django.http import HttpResponseRedirect, HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.template import RequestContext
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
@@ -17,7 +17,7 @@ from functools import reduce
 from django.views.generic.edit import FormView, CreateView
 from django.views.decorators.http import require_http_methods
 
-from .forms import ProfileForm, SignUpForm
+from .forms import ProfileForm, SignUpForm, CommentCreateForm
 from .models import UserProfile
 # Create your views here.
 
@@ -64,7 +64,7 @@ def get_profile(request):
             # redirect to a new URL
             form = form.cleaned_data
             UserProfile.updateProfile(request, form)
-            return HttpResponseRedirect('')
+            return HttpResponseRedirect("home/thread/{}".format(slug))
         else:
             print(form.errors)
 
@@ -133,6 +133,7 @@ class CommentThread(generic.ListView):
     paginated_by = 10
     ordering = ['-DateCreated']
 
+
     def get_queryset(self, *args, **kwargs):
         pk = self.kwargs['pk']
         return Comment.objects.filter(Thread_id=pk).order_by('DateCreated').reverse
@@ -142,8 +143,9 @@ class CommentThread(generic.ListView):
         context = super(CommentThread, self).get_context_data(**kwargs)
         pk = self.kwargs['pk']
         context['thread'] = Thread.objects.filter(id = pk).last
-        return context
+        context['form'] = CommentCreateForm()
 
+        return context
 
 
 # Messaging

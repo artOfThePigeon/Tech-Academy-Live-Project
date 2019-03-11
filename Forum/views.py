@@ -15,7 +15,10 @@ from .models import Comment, UserProfile, Topic, Thread, Message, FriendConnecti
 from django.db.models import Q
 from functools import reduce
 from django.views.generic.edit import FormView, CreateView
+<<<<<<< HEAD
 from django.views.decorators.http import require_http_methods
+=======
+>>>>>>> parent of 5f1ac96... Revert "Add create comment functionality"
 
 from .forms import ProfileForm, SignUpForm, CommentCreateForm
 from .models import UserProfile
@@ -64,7 +67,7 @@ def get_profile(request):
             # redirect to a new URL
             form = form.cleaned_data
             UserProfile.updateProfile(request, form)
-            return HttpResponseRedirect("home/thread/{}".format(slug))
+            return HttpResponseRedirect('')
         else:
             print(form.errors)
 

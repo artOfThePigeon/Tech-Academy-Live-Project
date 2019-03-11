@@ -15,10 +15,7 @@ from .models import Comment, UserProfile, Topic, Thread, Message, FriendConnecti
 from django.db.models import Q
 from functools import reduce
 from django.views.generic.edit import FormView, CreateView
-<<<<<<< HEAD
 from django.views.decorators.http import require_http_methods
-=======
->>>>>>> parent of 5f1ac96... Revert "Add create comment functionality"
 
 from .forms import ProfileForm, SignUpForm, CommentCreateForm
 from .models import UserProfile

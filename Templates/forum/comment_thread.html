@@ -1,0 +1,12 @@
+<h2>{{thread.Topic.TopicTitle}} | {{ thread.ThreadTitle }} | {{ thread.DateStarted }}</h2>
+<img src="{{ thread.Author.userprofile.Avatar.url }}" alt="{{thread.Author.username }} Avatar" width="150">
+<h3>Author: {{ thread.Author.username }}</h3>
+<h4>{{ thread.ThreadBody }}</h4>
+<p>Posts: {{ thread.PostCount}} | Views: {{ thread.ViewCount }}</p>
+<hr><hr>
+{% for comment in comments %}
+  <img src="{{ comment.User.userprofile.Avatar.url }}" alt="{{ comment.User.username }} Avatar" width="100">
+  <p>{{ comment.User.username }} | {{ comment.DateCreated }}</p><br>
+  <p>{{ comment.CommentBody }} </p><br>
+  <hr>
+{% endfor %}

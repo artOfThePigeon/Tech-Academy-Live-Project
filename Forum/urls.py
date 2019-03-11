@@ -11,5 +11,6 @@ urlpatterns = [
   path('message', views.message, name='message'),
   path('inbox', views.inbox, name='inbox'),
   path('msg_detail', views.messagedetails, name='messagedetail'),
-  path('topics/', views.TopicsView.as_view()),
+  path('topics/', views.TopicsView.as_view(), name='topics'),
+  path('thread/<int:pk>', views.CommentThread.as_view(), name='thread'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

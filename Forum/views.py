@@ -15,6 +15,7 @@ from .models import Comment, UserProfile, Topic, Thread, Message, FriendConnecti
 from django.db.models import Q
 from functools import reduce
 from django.views.generic.edit import FormView, CreateView
+from django.views.decorators.http import require_http_methods
 
 from .forms import ProfileForm, SignUpForm, CommentCreateForm
 from .models import UserProfile
@@ -110,7 +111,7 @@ class TopicsView(generic.ListView):
                             ORDER BY Forum_topic.id ASC''')
 
 @login_required
-#@require_http_methods(['POST'])
+@require_http_methods(['POST'])
 def create_comment(request, slug):
   if request.method == 'POST':
       form = CommentCreateForm(request.POST)

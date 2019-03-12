@@ -45,6 +45,9 @@ def home_view(request):
     threads = {"threads": data}
     return render(request, 'index.html', threads)
 
+def nav_view(request):
+    return render(request, 'test/testnav.html')
+
 
 class UserProfileListView(generic.ListView):
     template_name = 'user_profile/index.html'

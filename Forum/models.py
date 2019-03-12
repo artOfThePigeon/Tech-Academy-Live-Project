@@ -58,6 +58,9 @@ class Topic(models.Model):
     DateUpdated = models.DateField()
     ThreadCount = models.IntegerField()
 
+    def __str__(self):
+      return self.TopicTitle
+
 class Thread(models.Model):
     ThreadTitle = models.CharField(max_length=100)
     ThreadBody = models.CharField(max_length=1000)

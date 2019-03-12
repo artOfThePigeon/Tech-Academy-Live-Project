@@ -21,6 +21,28 @@ class SignUpForm(UserCreationForm):
       model = User
       fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', )
 
+
+
+class ThreadCreateForm(ModelForm):
+  ThreadTitle = forms.CharField(max_length=200, min_length=1, strip=True)
+  ThreadBody = forms.CharField(
+    max_length=1000,
+    min_length=1,
+    strip=True,
+    widget=forms.Textarea,
+  )
+
+
+  class Meta:
+    model = Thread
+    fields = ('ThreadTitle', 'ThreadBody', 'Topic',)
+'''
+  def __init__(self, *args, **kwargs):
+    super().__init__(*args, **kwargs)
+    self.fields['Topic'].queryset = City.objects.none()
+'''
+
+
 class CommentCreateForm(ModelForm):
   CommentBody = forms.CharField(
     max_length=1000,

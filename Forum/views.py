@@ -17,7 +17,7 @@ from functools import reduce
 from django.views.generic.edit import FormView, CreateView
 from django.views.decorators.http import require_http_methods
 
-from .forms import ProfileForm, SignUpForm, CommentCreateForm
+from .forms import ProfileForm, SignUpForm, CommentCreateForm, ThreadCreateForm
 from .models import UserProfile
 # Create your views here.
 
@@ -109,6 +109,24 @@ class TopicsView(generic.ListView):
                             ON Forum_topic.id = Forum_thread.Topic_id
                             GROUP BY Topic_id
                             ORDER BY Forum_topic.id ASC''')
+
+
+
+class ThreadCreateView(CreateView):
+  template_name = 'forum/thread_form.html'
+  model = Thread
+  form_class = ThreadCreateForm
+
+  def form_valid(self, form):
+    form = form.save(commit=False)
+    form.Author = self.request.user
+    form.ViewCount = 1
+    form.PostCount = 0
+    today = datetime.date.today().strftime('%Y-%m-%d')
+    form.DateStarted = today
+    form.DateUpdate = today
+    form.save()
+    return HttpResponseRedirect("/home/thread/{}/".format(form.id))
 
 @login_required
 @require_http_methods(['POST'])

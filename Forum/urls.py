@@ -14,4 +14,5 @@ urlpatterns = [
   path('topics/', views.TopicsView.as_view(), name='topics'),
   path('thread/<slug:pk>/', views.CommentThread.as_view(), name='thread'),
   re_path(r'^thread/(?P<slug>\w+)/comment$', views.create_comment, name='post_comment'),
+  path('createthread/', views.ThreadCreateView.as_view(), name='create_thread')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

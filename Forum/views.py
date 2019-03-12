@@ -17,7 +17,7 @@ from functools import reduce
 from django.views.generic.edit import FormView, CreateView
 from django.views.decorators.http import require_http_methods
 
-from .forms import ProfileForm, SignUpForm, CommentCreateForm
+from .forms import ProfileForm, SignUpForm, CommentCreateForm, ThreadCreateForm
 from .models import UserProfile
 # Create your views here.
 
@@ -93,6 +93,7 @@ def register(request):
     return render(request, 'Accounts/register.html', {'form': form})
 
 
+
 # Return a dictionary of thread topics
 class TopicsView(generic.ListView):
     model = Topic
@@ -102,13 +103,31 @@ class TopicsView(generic.ListView):
         return dictfetchall('''SELECT Forum_thread.id as thread_id,
                             Forum_topic.TopicTitle as "topic_title",
                             ThreadTitle as thread_title,
-                            Forum_topic.ThreadCount as thread_count,
+                            COUNT(Forum_thread.id) as thread_count,
                             MAX(Forum_thread.DateUpdate) as update_date
                             FROM Forum_thread
                             INNER JOIN Forum_topic
                             ON Forum_topic.id = Forum_thread.Topic_id
                             GROUP BY Topic_id
                             ORDER BY Forum_topic.id ASC''')
+
+
+
+class ThreadCreateView(CreateView):
+  template_name = 'forum/thread_form.html'
+  model = Thread
+  form_class = ThreadCreateForm
+
+  def form_valid(self, form):
+    form = form.save(commit=False)
+    form.Author = self.request.user
+    form.ViewCount = 1
+    form.PostCount = 0
+    today = datetime.date.today().strftime('%Y-%m-%d')
+    form.DateStarted = today
+    form.DateUpdate = today
+    form.save()
+    return HttpResponseRedirect("/home/thread/{}/".format(form.id))
 
 @login_required
 @require_http_methods(['POST'])
@@ -120,7 +139,10 @@ def create_comment(request, slug):
           thread = Thread.objects.get(id=slug)
           form.User = request.user
           form.Thread = thread
+
+          thread.DateUpdate = datetime.date.today().strftime('%Y-%m-%d')
           form.save()
+          thread.save()
           return HttpResponseRedirect("/home/thread/{}/".format(slug))
   else:
     return HttpResponseBadRequest()

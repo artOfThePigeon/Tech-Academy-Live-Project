@@ -40,6 +40,7 @@ def load_data(apps, schema_editor):
         user_profile = UserProfile(
             User_id=userData[i]['id'],
             Signature="TestSignature_{}".format(i),
+            Avatar = 'avatar/default-avatar.png'
         )
         user_profile.save()
 
@@ -116,7 +117,3 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunPython(load_data, delete_data),
     ]
-
-
-
-

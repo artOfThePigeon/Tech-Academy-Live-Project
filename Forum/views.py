@@ -93,6 +93,7 @@ def register(request):
     return render(request, 'Accounts/register.html', {'form': form})
 
 
+
 # Return a dictionary of thread topics
 class TopicsView(generic.ListView):
     model = Topic
@@ -102,7 +103,7 @@ class TopicsView(generic.ListView):
         return dictfetchall('''SELECT Forum_thread.id as thread_id,
                             Forum_topic.TopicTitle as "topic_title",
                             ThreadTitle as thread_title,
-                            Forum_topic.ThreadCount as thread_count,
+                            COUNT(Forum_thread.id) as thread_count,
                             MAX(Forum_thread.DateUpdate) as update_date
                             FROM Forum_thread
                             INNER JOIN Forum_topic
@@ -138,7 +139,10 @@ def create_comment(request, slug):
           thread = Thread.objects.get(id=slug)
           form.User = request.user
           form.Thread = thread
+
+          thread.DateUpdate = datetime.date.today().strftime('%Y-%m-%d')
           form.save()
+          thread.save()
           return HttpResponseRedirect("/home/thread/{}/".format(slug))
   else:
     return HttpResponseBadRequest()

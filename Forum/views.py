@@ -16,9 +16,10 @@ from django.db.models import Q
 from functools import reduce
 from django.views.generic.edit import FormView, CreateView
 from django.views.decorators.http import require_http_methods
+from dal import autocomplete
 
 from .forms import ProfileForm, SignUpForm, CommentCreateForm, ThreadCreateForm
-from .models import UserProfile
+from .models import UserProfile, FriendConnection
 # Create your views here.
 
 
@@ -259,3 +260,25 @@ def messagedetails(request):
 
     # Return the list of messages to the template to be placed
     return render(request, 'Message/messagedetails.html', {'messages': messages})
+
+
+
+class FriendListView(generic.ListView):
+  model = FriendConnection
+  template_name = 'forum/friend_list.html'
+
+
+  def get_queryset(self):
+    userID = self.request.user.id
+    print(userID)
+    # Return FriendConnection where the user is sender or receiver and is confirmed
+    return FriendConnection.objects.filter((Q(IsConfirmed=1) & (Q(ReceivingUser_id = userID) | Q(SendingUser_id = userID))))
+
+
+  def get_context_data(self, *args, **kwargs):
+    context = super(FriendListView, self).get_context_data()
+    userID = self.request.user.id
+    context['unconfirmed_friends'] = FriendConnection.objects.filter(Q(IsConfirmed=0) &
+                                          (Q(ReceivingUser_id = userID) |
+                                          Q(SendingUser_id = userID)))
+    context['all'] = FriendConnection.objects.all()

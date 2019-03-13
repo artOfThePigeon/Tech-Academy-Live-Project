@@ -1,0 +1,20 @@
+{% debug %}
+{% block content %}
+{% for person in friends %}
+<div>
+  <h1>{{ person.id }}</h1>
+</div>
+{% endfor %}
+<hr>
+{% for person in unconfirmed_friends %}
+<div>
+  <h1>{{ person.id }}</h1>
+</div>
+{% endfor %}
+
+{% for person in all %}
+<div>
+  <h1>{{ person.id }}</h1>
+</div>
+{% endfor %}
+{% endblock %}

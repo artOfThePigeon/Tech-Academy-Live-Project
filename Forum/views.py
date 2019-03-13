@@ -263,22 +263,37 @@ def messagedetails(request):
 
 
 
+def change_friend_status(request, **kwargs):
+  if request.user.is_authenticated:
+    if request.method == 'POST':
+      user = request.user
+      friendID = kwargs['id']
+      friend = FriendConnection.objects.get(id=friendID)
+      if 'add_friend' in request.POST:
+        confirmed = not friend.IsConfirmed
+        friend.IsConfirmed = confirmed
+        friend.save(update_fields=['IsConfirmed'])
+      elif 'delete_friend' in request.POST:
+        friend.delete()
+    return HttpResponseRedirect("/home/friends/")
+
+
+
 class FriendListView(generic.ListView):
   model = FriendConnection
   template_name = 'forum/friend_list.html'
-
+  context_object_name = 'friends'
 
   def get_queryset(self):
-    userID = self.request.user.id
-    print(userID)
-    # Return FriendConnection where the user is sender or receiver and is confirmed
-    return FriendConnection.objects.filter((Q(IsConfirmed=1) & (Q(ReceivingUser_id = userID) | Q(SendingUser_id = userID))))
+    userID = self.request.user
+
+    return FriendConnection.objects.filter((Q(IsConfirmed=1) & (Q(ReceivingUser_id = userID) | Q(SendingUser_id = userID)))).all()
 
 
   def get_context_data(self, *args, **kwargs):
-    context = super(FriendListView, self).get_context_data()
-    userID = self.request.user.id
-    context['unconfirmed_friends'] = FriendConnection.objects.filter(Q(IsConfirmed=0) &
+    context = super(FriendListView, self).get_context_data(**kwargs)
+    userID = self.request.user
+    context['unconfirmed_friends'] = FriendConnection.objects.filter((Q(IsConfirmed=0) &
                                           (Q(ReceivingUser_id = userID) |
-                                          Q(SendingUser_id = userID)))
-    context['all'] = FriendConnection.objects.all()
+                                          Q(SendingUser_id = userID))))
+    return context

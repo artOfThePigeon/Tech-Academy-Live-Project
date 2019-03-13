@@ -16,4 +16,5 @@ urlpatterns = [
   re_path(r'^thread/(?P<slug>\w+)/comment$', views.create_comment, name='post_comment'),
   path('createthread/', views.ThreadCreateView.as_view(), name='create_thread'),
   path('friends/', views.FriendListView.as_view(), name='friends'),
+  re_path(r'^friends/(?P<id>\w+)/', views.change_friend_status, name='friend_status')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

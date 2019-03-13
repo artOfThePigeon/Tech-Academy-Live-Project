@@ -1,20 +1,36 @@
-{% debug %}
 {% block content %}
+<h1>Friends</h1>
 {% for person in friends %}
 <div>
-  <h1>{{ person.id }}</h1>
-</div>
-{% endfor %}
-<hr>
-{% for person in unconfirmed_friends %}
-<div>
-  <h1>{{ person.id }}</h1>
+  <form method="POST" action="{% url 'Forum:friend_status' person.id %}" class="update_friend_status">
+    {% csrf_token %}
+    {% if user.username == person.SendingUser.username %}
+    <p>{{ person.ReceivingUser.username }}</p>
+    {% else %}
+    <p>{{ person.SendingUser.username }}</p>
+    {% endif %}
+    <button type="submit" name="add_friend">Add Friend</button>
+    <button type="submit" name="delete_friend">Delete Friend Request</button>
+  </form>
 </div>
 {% endfor %}
 
-{% for person in all %}
+<hr>
+
+{% for person in unconfirmed_friends %}
 <div>
-  <h1>{{ person.id }}</h1>
+
+  <form method="POST" action="{% url 'Forum:friend_status' person.id %}" class="update_friend_status">
+    {% csrf_token %}
+    {% if user.username == person.SendingUser.username %}
+    <p>{{ person.ReceivingUser.username }}</p>
+    {% else %}
+    <p>{{ person.SendingUser.username }}</p>
+    {% endif %}
+    <button type="submit" name="add_friend">Add Friend</button>
+    <button type="submit" name="delete_friend">Delete Friend Request</button>
+  </form>
 </div>
 {% endfor %}
+
 {% endblock %}

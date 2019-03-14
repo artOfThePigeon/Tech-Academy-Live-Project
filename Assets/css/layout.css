@@ -1,6 +1,6 @@
-*
-{
-    margin:0;
+* {
+    margin: 0;
+    font-family: "Roboto", sans-serif;
 }
 
 html
@@ -8,10 +8,10 @@ html
     background-color: white;
 }
 
-body
-{
+body {
     position: relative;
     overflow: hidden;
+    
 }
 
 html, body

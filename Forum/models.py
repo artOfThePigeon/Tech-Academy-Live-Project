@@ -70,6 +70,7 @@ class Thread(models.Model):
     DateStarted = models.DateField()
     PostCount = models.IntegerField()
     DateUpdate = models.DateField()
+    UpVoteCount = models.IntegerField(default=0)
 
     class Meta:
       ordering = ['-DateUpdate']

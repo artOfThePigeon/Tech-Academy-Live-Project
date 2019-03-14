@@ -19,7 +19,7 @@ class UserProfile(models.Model):
 
     def __str__(self):
         """String for replacing the default 'UserProfile object 1' formatting """
-        return f'{self.User.username} Profile'
+        return '{self.User.username} Profile'
 
     @classmethod
     def updateProfile(self, request, form):

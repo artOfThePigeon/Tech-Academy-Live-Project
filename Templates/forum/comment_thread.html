@@ -1,6 +1,7 @@
-
+{% block content %}
+{% load static %}
 <div class="thread-header">
-  <h2>{{thread.Topic.TopicTitle}} | {{ thread.ThreadTitle }} | {{ thread.DateStarted }}</h2>
+  <h2>{{thread.Topic.TopicTitle}} | {{ thread.ThreadTitle }} | {{ thread.DateStarted }} | Upvotes: {{ thread.UpVoteCount }}<input type="image" src="{% static 'img/upvote-icon.png' %}" name="upvote" class="upvote-button" id="upvote" /></h2>
   <img src="{{ thread.Author.userprofile.Avatar.url }}" alt="{{thread.Author.username }} Avatar" width="150">
   <h3>Author: {{ thread.Author.username }}</h3>
   <h4>{{ thread.ThreadBody }}</h4>
@@ -26,3 +27,8 @@
     <hr>
   </div>
 {% endfor %}
+{% endblock %}
+
+{% block js %}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+{% endblock %}

@@ -1,6 +1,6 @@
-*
-{
-    margin:0;
+* {
+    margin: 0;
+    font-family: "Roboto", sans-serif;
 }
 
 html
@@ -8,11 +8,11 @@ html
     background-color: white;
 }
 
-body
-{
-    font-family: "Roboto", sans-serif;
+body {
+
     position: relative;
     overflow: hidden;
+    font-family: "Roboto", sans-serif;
 }
 
 html, body

@@ -66,7 +66,6 @@ def get_profile(request):
 
     else:
       sig = request.user.userprofile.Signature
-      avatar = request.user.userprofile.Avatar
       form = ProfileForm({'Signature': sig, 'Avatar': avatar})
     context = {
       'form': form,

@@ -16,9 +16,8 @@ from django.db.models import Q
 from functools import reduce
 from django.views.generic.edit import FormView, CreateView
 from django.views.decorators.http import require_http_methods
-from dal import autocomplete
-
-from .forms import ProfileForm, SignUpForm, CommentCreateForm, ThreadCreateForm
+from django.http import JsonResponse
+from .forms import ProfileForm, SignUpForm, CommentCreateForm, ThreadCreateForm, FriendRequestForm
 from .models import UserProfile, FriendConnection
 # Create your views here.
 
@@ -48,10 +47,6 @@ def home_view(request):
     threads = {"threads": data}
     return render(request, 'index.html', threads)
 
-
-class UserProfileListView(generic.ListView):
-    template_name = 'user_profile/index.html'
-    context_object_name = 'users'
 
 
 def get_profile(request):
@@ -263,20 +258,48 @@ def messagedetails(request):
 
 
 
+def autocomplete(request):
+  if request.is_ajax():
+    user = request.user.id
+    friends = FriendConnection.objects.filter(Q(ReceivingUser = user) |
+                                              Q(SendingUser = user))
+    sending_friends_ids = friends.values('SendingUser')
+    receiving_friends_ids = friends.values('ReceivingUser')
+
+    queryset = User.objects.exclude(Q(id__in=sending_friends_ids) | \
+     Q(id__in=receiving_friends_ids)) \
+    .filter(username__startswith=request.GET.get('search', None))
+    list = []
+    for i in queryset:
+      list.append(i.username)
+    data = {
+      'list': list
+    }
+    return JsonResponse(data)
+
+
+
 def change_friend_status(request, **kwargs):
   if request.user.is_authenticated:
     if request.method == 'POST':
-      user = request.user
-      friendID = kwargs['id']
-      friend = FriendConnection.objects.get(id=friendID)
-      if 'add_friend' in request.POST:
-        confirmed = not friend.IsConfirmed
-        friend.IsConfirmed = confirmed
-        friend.save(update_fields=['IsConfirmed'])
-      elif 'delete_friend' in request.POST:
-        friend.delete()
+      if not 'add_friend' in request.POST:
+        user = request.user
+        friendID = kwargs['id']
+        friend = FriendConnection.objects.get(id=friendID)
+        if 'confirm_friend' in request.POST:
+          confirmed = not friend.IsConfirmed
+          friend.IsConfirmed = confirmed
+          friend.save(update_fields=['IsConfirmed'])
+        elif 'delete_friend' in request.POST:
+          friend.delete()
+      else:
+        try:
+          user = User.objects.get(id = kwargs['id'])
+          friend = User.objects.get(username = request.POST.get('friend_name', None))
+          FriendConnection.objects.create(IsConfirmed=0, SendingUser=user, ReceivingUser = friend)
+        except:
+          return HttpResponseBadRequest()
     return HttpResponseRedirect("/home/friends/")
-
 
 
 class FriendListView(generic.ListView):

@@ -16,5 +16,6 @@ urlpatterns = [
   re_path(r'^thread/(?P<slug>\w+)/comment$', views.create_comment, name='post_comment'),
   path('createthread/', views.ThreadCreateView.as_view(), name='create_thread'),
   path('friends/', views.FriendListView.as_view(), name='friends'),
-  re_path(r'^friends/(?P<id>\w+)/', views.change_friend_status, name='friend_status')
+  re_path(r'^friends/(?P<id>\w+)/', views.change_friend_status, name='friend_status'),
+  re_path(r'^ajax/autocomplete/$', views.autocomplete, name='ajax_autocomplete'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

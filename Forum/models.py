@@ -19,7 +19,7 @@ class UserProfile(models.Model):
 
     def __str__(self):
         """String for replacing the default 'UserProfile object 1' formatting """
-        return f'{self.User.username} Profile'
+        return '{self.User.username} Profile'
 
     @classmethod
     def updateProfile(self, request, form):
@@ -86,6 +86,9 @@ class FriendConnection(models.Model):
     ReceivingUser = models.ForeignKey(User,related_name="FriendReceiver", on_delete=models.CASCADE)
     SendingUser = models.ForeignKey(User,related_name="FriendSender", on_delete=models.CASCADE)
     IsConfirmed = models.BooleanField()
+
+    def __str__(self):
+      return self.ReceivingUser.username
 
 class Message(models.Model):
     ReceivingUser = models.ForeignKey(User,related_name="MessageReceiver", on_delete=models.CASCADE)

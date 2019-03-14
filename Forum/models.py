@@ -58,6 +58,9 @@ class Topic(models.Model):
     DateUpdated = models.DateField()
     ThreadCount = models.IntegerField()
 
+    def __str__(self):
+      return self.TopicTitle
+
 class Thread(models.Model):
     ThreadTitle = models.CharField(max_length=100)
     ThreadBody = models.CharField(max_length=1000)
@@ -76,6 +79,7 @@ class Comment(models.Model):
     Thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
     CommentBody = models.CharField(max_length=1000)
     DateCreated = models.DateTimeField(auto_now=True)
+
 
 class FriendConnection(models.Model):
     ReceivingUser = models.ForeignKey(User,related_name="FriendReceiver", on_delete=models.CASCADE)

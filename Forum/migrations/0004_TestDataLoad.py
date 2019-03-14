@@ -1,6 +1,7 @@
 from django.db import migrations
 from django.contrib.auth.models import User
 from django.utils import timezone
+import datetime
 import random
 
 def load_data(apps, schema_editor):
@@ -26,8 +27,8 @@ def load_data(apps, schema_editor):
             username="test_user_{}".format(i),
             is_staff=True if i > 16 else False,
             is_active=True if i > 1 else False,
-            date_joined=timezone.now(),
-            last_login=timezone.now(),
+            date_joined=timezone.now() - datetime.timedelta(minutes=random.randint(3, 50000)),
+            last_login= timezone.now() + datetime.timedelta(minutes=random.randint(3, 1000)),
         )
         user.save()
         userData[i] = {
@@ -40,6 +41,7 @@ def load_data(apps, schema_editor):
         user_profile = UserProfile(
             User_id=userData[i]['id'],
             Signature="TestSignature_{}".format(i),
+            Avatar = 'avatar/default-avatar.png'
         )
         user_profile.save()
 
@@ -68,7 +70,7 @@ def load_data(apps, schema_editor):
     for i in range(1, 6):
         topic = Topic(
             TopicTitle="Test Topic Number {}".format(i),
-            DateUpdated=timezone.now(),
+            DateUpdated=timezone.now() - datetime.timedelta(minutes=random.randint(3, 1000)),
             ThreadCount=(i + 2),
         )
         topic.save()
@@ -79,9 +81,9 @@ def load_data(apps, schema_editor):
                 ThreadTitle="Thread title {}:{}".format(i, y),
                 ThreadBody="This is the thread body of {}:{}".format(i, y),
                 ViewCount=0,
-                DateStarted=timezone.now(),
+                DateStarted=timezone.now() - datetime.timedelta(minutes=random.randint(3, 20000)),
                 PostCount=2,
-                DateUpdate=timezone.now(),
+                DateUpdate=timezone.now() + datetime.timedelta(minutes=random.randint(3, 1000)),
                 Author_id=userData[author_num]['id'],
                 Topic_id=topic.id,
             )
@@ -116,7 +118,3 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunPython(load_data, delete_data),
     ]
-
-
-
-

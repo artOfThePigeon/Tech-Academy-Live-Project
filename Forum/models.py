@@ -70,6 +70,7 @@ class Thread(models.Model):
     DateStarted = models.DateField()
     PostCount = models.IntegerField()
     DateUpdate = models.DateField()
+    UpVoteCount = models.IntegerField(default=0)
 
     class Meta:
       ordering = ['-DateUpdate']
@@ -95,3 +96,7 @@ class Message(models.Model):
     Subject = models.CharField(max_length=50)
     MessageBody = models.CharField(max_length=1000)
     DateSent = models.DateTimeField(auto_now=True)
+
+class Upvote(models.Model):
+  User = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+  Thread = models.ForeignKey(Thread, on_delete=models.CASCADE)

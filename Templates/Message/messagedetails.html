@@ -10,11 +10,18 @@
 
 <!-- Place messages bodys in template in unordered list -->
 <content>
-   Messages<br><br>
+   <p class="msgMessages">
+       Messages<br><br>
+   </p>
 <ul>
    {% for item in messages %}
    <li>
-       <p>{{ item.MessageBody }}</p>
+       <p>
+           {{ Message.Subject }}
+       </p>
+       <p>
+           {{ item.MessageBody }}  
+       </p>
    </li>
    {% endfor %}
 </ul>

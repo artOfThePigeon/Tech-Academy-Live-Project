@@ -1,4 +1,4 @@
-
+{% include 'base.html' %}
 <div class="thread-header">
   <h2>{{ thread.Topic.TopicTitle }} | {{ thread.ThreadTitle }} | {{ thread.DateStarted }}</h2>
   <img src="{{ thread.Author.userprofile.Avatar.url }}" alt="{{thread.Author.username }} Avatar" width="150">
@@ -18,11 +18,16 @@
 </div>
 <hr>
 {% for comment in comments %}
-  <div class="comment">
+<div class="comment">
     <img src="{{ comment.User.userprofile.Avatar.url }}" alt="{{ comment.User.username }} Avatar" width="100">
     <p>{{ comment.User.username }} | {{ comment.DateCreated }}</p><br>
     <p>{{ comment.CommentBody }} </p><br>
     <p>{{ comment.User.userprofile.Signature}}</p>
     <hr>
-  </div>
+</div>
 {% endfor %}
+{% endblock %}
+
+{% block js %}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+{% endblock %}

@@ -37,11 +37,7 @@ class ThreadCreateForm(ModelForm):
   class Meta:
     model = Thread
     fields = ('ThreadTitle', 'ThreadBody', 'Topic',)
-'''
-  def __init__(self, *args, **kwargs):
-    super().__init__(*args, **kwargs)
-    self.fields['Topic'].queryset = City.objects.none()
-'''
+
 
 
 class CommentCreateForm(ModelForm):

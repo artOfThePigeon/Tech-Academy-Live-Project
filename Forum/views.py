@@ -37,7 +37,6 @@ def dictfetchall(query):
 
 
 
-
 # Account Views
 @login_required
 def home_view(request):
@@ -71,6 +70,7 @@ def get_profile(request):
     }
 
     return render(request, 'user_profile/index.html', context)
+
 
 
 def register(request):
@@ -137,8 +137,10 @@ def create_comment(request, slug):
           thread = Thread.objects.get(id=slug)
           form.User = request.user
           form.Thread = thread
-
           thread.DateUpdate = datetime.date.today().strftime('%Y-%m-%d')
+          count = Comment.objects.filter(Thread_id=slug).count()
+          # count + 1 because it won't count the post we are about to make
+          thread.PostCount = count + 1
           form.save()
           thread.save()
           return HttpResponseRedirect("/home/thread/{}/".format(slug))
@@ -162,7 +164,6 @@ def upvote_thread(request, *args, **kwargs):
       count = Upvote.objects.filter(Thread_id=threadID).count()
       thread.UpVoteCount = count
       thread.save()
-      print(count)
       return HttpResponse(count)
   else:
     HttpResponseRedirect("{% url 'login' %}")
@@ -190,6 +191,7 @@ class CommentThread(generic.ListView):
         context['form'] = CommentCreateForm()
 
         return context
+
 
 
 # Messaging
@@ -246,9 +248,9 @@ def message(request):
         # Return list of friends usernames
         return render(request, 'Message/message.html', context)
 
+
+
 # Main Inbox
-
-
 def inbox(request):
 
     # Populate all messages to current user.
@@ -263,9 +265,10 @@ def inbox(request):
     else:
         return render(request, 'Message/inbox.html', {})
 
+
+
+
 # Message Details (Shows all messages from selected sender)
-
-
 def messagedetails(request):
 
     currentUser = request.user.id  # Set current user
@@ -283,7 +286,7 @@ def messagedetails(request):
     return render(request, 'Message/messagedetails.html', {'messages': messages})
 
 
-
+# Use AJAX to display autocomplete search results in the friends page
 def autocomplete(request):
   if request.is_ajax():
     user = request.user.id
@@ -308,6 +311,7 @@ def autocomplete(request):
 def change_friend_status(request, **kwargs):
   if request.user.is_authenticated:
     if request.method == 'POST':
+      # If we aren't adding a friend, then see if we are confirming or deleting
       if not 'add_friend' in request.POST:
         user = request.user
         friendID = kwargs['id']
@@ -318,6 +322,7 @@ def change_friend_status(request, **kwargs):
           friend.save(update_fields=['IsConfirmed'])
         elif 'delete_friend' in request.POST:
           friend.delete()
+      # This is if we are adding a friend
       else:
         try:
           user = User.objects.get(id = kwargs['id'])

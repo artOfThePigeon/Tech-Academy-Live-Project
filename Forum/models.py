@@ -86,9 +86,6 @@ class FriendConnection(models.Model):
     SendingUser = models.ForeignKey(User,related_name="FriendSender", on_delete=models.CASCADE)
     IsConfirmed = models.BooleanField()
 
-    def __str__(self):
-      return self.ReceivingUser.username
-
 class Message(models.Model):
     ReceivingUser = models.ForeignKey(User,related_name="MessageReceiver", on_delete=models.CASCADE)
     SendingUser = models.ForeignKey(User,related_name="MessageSender", on_delete=models.CASCADE)

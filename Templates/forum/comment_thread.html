@@ -2,7 +2,7 @@
 
 <div class='main'>
   <div class="thread-header">
-    <h2>{{thread.id}} | {{ thread.Topic.TopicTitle }} | {{ thread.ThreadTitle }} | {{ thread.DateStarted }} | <span id="upvote_count">Upvotes: {{ thread.UpVoteCount }}</span></h2>
+    <h2> {{ thread.Topic.TopicTitle }} | {{ thread.ThreadTitle }} | {{ thread.DateStarted }} | Upvotes: <span id="upvote_count">{{ thread.UpVoteCount }}</span></h2>
     {% if user.is_authenticated  %}
       <div>
         <button id="upvotes" name="upvote-btn" type="button" class="upvote-icon" data-threadID="{{thread.id}}" >

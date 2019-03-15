@@ -1,11 +1,11 @@
 {% include 'base.html' %}
 <div class="thread-header">
-    <h2>{{thread.Topic.TopicTitle}} | {{ thread.ThreadTitle }} | {{ thread.DateStarted }}</h2>
-    <img src="{{ thread.Author.userprofile.Avatar.url }}" alt="{{thread.Author.username }} Avatar" width="150">
-    <h3>Author: {{ thread.Author.username }}</h3>
-    <h4>{{ thread.ThreadBody }}</h4>
-    <p>{{ thread.Author.userprofile.Signature }}
-    <p>Posts: {{ thread.PostCount}} | Views: {{ thread.ViewCount }}</p>
+  <h2>{{ thread.Topic.TopicTitle }} | {{ thread.ThreadTitle }} | {{ thread.DateStarted }}</h2>
+  <img src="{{ thread.Author.userprofile.Avatar.url }}" alt="{{thread.Author.username }} Avatar" width="150">
+  <h3>Author: {{ thread.Author.username }}</h3>
+  <h4>{{ thread.ThreadBody }}</h4>
+  <p>{{ thread.Author.userprofile.Signature }}
+  <p>Posts: {{ thread.PostCount}} | Views: {{ thread.ViewCount }}</p>
 </div>
 
 <hr><hr>

@@ -9,26 +9,33 @@
 
 <!-- Place messages bodys in template in unordered list -->
 
+
+
 <content>
-    <p class="msgMessages">
-        Messages<br><br>
-    </p>
-    <ul>
-        {% for item in messages %}
-        <li>
-            <p>
-                <!--Print subject above the message-->
-                Subject: {{ item.Subject }}
+    <div class="forum-container">
+        <div class="main">
+            <p class="msgMessages">
+                Messages<br><br>
             </p>
-            <p>
-                Date received: {{ item.DateSent}}
-            </p>
-            <p>
-                {{ item.MessageBody }}
-            </p>
-        </li>
-        {% endfor %}
-    </ul>
+            <ul>
+                {% for item in messages %}
+                <li>
+                    <p>
+                        <!--Print subject above the message-->
+                        Subject: {{ item.Subject }}
+                    </p>
+                    <p>
+                        Date received: {{ item.DateSent}}
+                    </p>
+                    <p>
+                        {{ item.MessageBody }}
+                    </p>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </content>
 
-    {% endblock %}
+{% endblock %}
+

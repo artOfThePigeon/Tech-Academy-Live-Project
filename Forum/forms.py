@@ -54,3 +54,11 @@ class CommentCreateForm(ModelForm):
   class Meta:
     model = Comment
     fields = ['CommentBody']
+
+class FriendRequestForm(ModelForm):
+  id = forms.ModelChoiceField(
+    queryset = User.objects.all(),
+  )
+  class Meta:
+    model = FriendConnection
+    fields = ['id']

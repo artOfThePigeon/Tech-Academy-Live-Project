@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-
+<div class='main'>
 <h1>Add Friend</h1>
 <div class='friend-search'>
     <form method="POST" action="{% url 'Forum:friend_status' user.id %}" enctype="multipart/form-data" class="update_friend_status">
@@ -60,6 +60,7 @@
     </form>
   </div>
 {% endfor %}
+</div>
 
 <script
 			  src="http://code.jquery.com/jquery-3.3.1.js"

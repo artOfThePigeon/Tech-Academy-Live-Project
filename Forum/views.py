@@ -47,6 +47,10 @@ def home_view(request):
     return render(request, 'index.html', threads)
 
 
+class UserProfileListView(generic.ListView):
+    template_name = 'user_profile/index.html'
+    context_object_name = 'users'
+
 
 def get_profile(request):
     # if this is a post request we need to process the form data
@@ -59,14 +63,15 @@ def get_profile(request):
             # redirect to a new URL
             form = form.cleaned_data
             UserProfile.updateProfile(request, form)
-            return HttpResponseRedirect('')
+            return HttpResponseRedirect('/')
         else:
             print(form.errors)
 
     else:
-        form = ProfileForm()
+      sig = request.user.userprofile.Signature
+      form = ProfileForm({'Signature': sig})
     context = {
-        'form': form,
+      'form': form,
     }
 
     return render(request, 'user_profile/index.html', context)
@@ -204,6 +209,8 @@ def message(request):
         # Defining where text will come from on template
         content = request.POST['content']
         reciever = request.POST['reciever']
+        # Add subject line to message
+        subject = request.POST['subject']
 
         # Gets the username of the receiver from the db
         reciever_used = User.objects.get(username=reciever)
@@ -212,6 +219,7 @@ def message(request):
         message = Message()  # Creating connection to the db
         # Setting respective table fields to template content
         message.MessageBody = content
+        message.Subject = subject
         message.ReceivingUser = reciever_used
         message.SendingUser = sender_used
         message.save()  # Saving to the db

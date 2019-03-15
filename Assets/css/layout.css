@@ -54,3 +54,9 @@ h1
 {
     padding: 5 5;
 }
+
+/* Center the 'Messages' text on messagedetails.html */
+.msgMessages
+{
+    text-align: center;
+} 

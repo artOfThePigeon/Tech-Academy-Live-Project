@@ -4,19 +4,31 @@
 {% block title %}Message Detail{% endblock %}
 
 {% block content %} <!-- Where the content will be placed in the base.html -->
-
-<!-- Cross-site request forgery protection functionality is available because our function in views.py returns a render method -->     
+<!-- Cross-site request forgery protection functionality is available because our function in views.py returns a render method -->
 {% csrf_token %}
 
 <!-- Place messages bodys in template in unordered list -->
+
 <content>
-   Messages<br><br>
-<ul>
-   {% for item in messages %}
-   <li>
-       <p>{{ item.MessageBody }}</p>
-   </li>
-   {% endfor %}
-</ul>
-</content>                    
-{% endblock %} 
+    <p class="msgMessages">
+        Messages<br><br>
+    </p>
+    <ul>
+        {% for item in messages %}
+        <li>
+            <p>
+                <!--Print subject above the message-->
+                Subject: {{ item.Subject }}
+            </p>
+            <p>
+                Date received: {{ item.DateSent}}
+            </p>
+            <p>
+                {{ item.MessageBody }}
+            </p>
+        </li>
+        {% endfor %}
+    </ul>
+</content>
+
+    {% endblock %}

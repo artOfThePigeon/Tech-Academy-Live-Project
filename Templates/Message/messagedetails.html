@@ -17,6 +17,10 @@
         {% for item in messages %}
         <li>
             <p>
+                <!--Print subject above the message-->
+                Subject: {{ item.Subject }}
+            </p>
+            <p>
                 Date received: {{ item.DateSent}}
             </p>
             <p>

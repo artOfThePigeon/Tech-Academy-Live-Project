@@ -180,6 +180,8 @@ def message(request):
         # Defining where text will come from on template
         content = request.POST['content']
         reciever = request.POST['reciever']
+        # Add subject line to message
+        subject = request.POST['subject']
 
         # Gets the username of the receiver from the db
         reciever_used = User.objects.get(username=reciever)
@@ -188,6 +190,7 @@ def message(request):
         message = Message()  # Creating connection to the db
         # Setting respective table fields to template content
         message.MessageBody = content
+        message.Subject = subject
         message.ReceivingUser = reciever_used
         message.SendingUser = sender_used
         message.save()  # Saving to the db

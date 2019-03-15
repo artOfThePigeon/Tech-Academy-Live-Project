@@ -1,28 +1,50 @@
-{% include 'base.html' %}
-<div class="thread-header">
-  <h2>{{ thread.Topic.TopicTitle }} | {{ thread.ThreadTitle }} | {{ thread.DateStarted }}</h2>
-  <img src="{{ thread.Author.userprofile.Avatar.url }}" alt="{{thread.Author.username }} Avatar" width="150">
-  <h3>Author: {{ thread.Author.username }}</h3>
-  <h4>{{ thread.ThreadBody }}</h4>
-  <p>{{ thread.Author.userprofile.Signature }}
-  <p>Posts: {{ thread.PostCount}} | Views: {{ thread.ViewCount }}</p>
+{% load staticfiles %}
+
+<div class='main'>
+  <div class="thread-header">
+    <h2>{{thread.id}} | {{ thread.Topic.TopicTitle }} | {{ thread.ThreadTitle }} | {{ thread.DateStarted }} | <span id="upvote_count">{{ thread.UpVoteCount }}</span></h2>
+    {% if user.is_authenticated  %}
+      <div>
+        <button id="upvotes" name="upvote-btn" type="button" class="upvote-icon" data-threadID="{{thread.id}}" >
+        Upvote
+        </button>
+      <div>
+    {% endif %}
+    <img src="{{ thread.Author.userprofile.Avatar.url }}" alt="{{thread.Author.username }} Avatar" width="150">
+    <h3>Author: {{ thread.Author.username }}</h3>
+    <h4>{{ thread.ThreadBody }}</h4>
+    <p>{{ thread.Author.userprofile.Signature }}
+    <p>Posts: {{ thread.PostCount}} | Views: {{ thread.ViewCount }}</p>
+  </div>
+
+  <hr><hr>
+  <div>
+      <form method="POST" action="{% url 'Forum:post_comment' thread.id %}" enctype="multipart/form-data" class="create_comment_form">
+          {% csrf_token %}
+          {{ form }}
+          <button type="submit">Submit comment</button>
+      </form>
+  </div>
+  <hr>
+  {% for comment in comments %}
+  <div class="comment">
+      <img src="{{ comment.User.userprofile.Avatar.url }}" alt="{{ comment.User.username }} Avatar" width="100">
+      <p>{{ comment.User.username }} | {{ comment.DateCreated }}</p><br>
+      <p>{{ comment.CommentBody }} </p><br>
+      <p>{{ comment.User.userprofile.Signature}}</p>
+      <hr>
+  </div>
+  {% endfor %}
 </div>
 
-<hr><hr>
-<div>
-    <form method="POST" action="{% url 'Forum:post_comment' thread.id %}" enctype="multipart/form-data" class="create_comment_form">
-        {% csrf_token %}
-        {{ form }}
-        <button type="submit">Submit comment</button>
-    </form>
-</div>
-<hr>
-{% for comment in comments %}
-<div class="comment">
-    <img src="{{ comment.User.userprofile.Avatar.url }}" alt="{{ comment.User.username }} Avatar" width="100">
-    <p>{{ comment.User.username }} | {{ comment.DateCreated }}</p><br>
-    <p>{{ comment.CommentBody }} </p><br>
-    <p>{{ comment.User.userprofile.Signature}}</p>
-    <hr>
-</div>
-{% endfor %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type='text/javascript'>
+  $("#upvotes").click(function(){
+    var threadID;
+    threadID = $(this).attr("data-threadID");
+    $.get('{% url "Forum:upvote" thread.id %}', function(data){
+      $('#upvote_count').html(data);
+    });
+  });
+
+</script>

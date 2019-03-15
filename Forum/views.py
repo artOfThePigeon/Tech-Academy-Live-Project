@@ -18,7 +18,7 @@ from django.views.generic.edit import FormView, CreateView
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 from .forms import ProfileForm, SignUpForm, CommentCreateForm, ThreadCreateForm, FriendRequestForm
-from .models import UserProfile, FriendConnection
+from .models import UserProfile, FriendConnection, Upvote
 # Create your views here.
 
 
@@ -125,6 +125,8 @@ class ThreadCreateView(CreateView):
     form.save()
     return HttpResponseRedirect("/home/thread/{}/".format(form.id))
 
+
+
 @login_required
 @require_http_methods(['POST'])
 def create_comment(request, slug):
@@ -142,6 +144,30 @@ def create_comment(request, slug):
           return HttpResponseRedirect("/home/thread/{}/".format(slug))
   else:
     return HttpResponseBadRequest()
+
+
+
+def upvote_thread(request, *args, **kwargs):
+  if request.user.is_authenticated:
+    if request.method == 'GET':
+      userID = request.user.id
+      threadID = kwargs['id']
+      user_upvoted_thread = Upvote.objects.filter(Thread_id=threadID, User_id=userID)
+      if user_upvoted_thread.count():
+        user_upvoted_thread.delete()
+      else:
+        Upvote.objects.create(Thread_id=threadID, User_id=userID)
+
+      thread = Thread.objects.get(id=threadID)
+      count = Upvote.objects.filter(Thread_id=threadID).count()
+      thread.UpVoteCount = count
+      thread.save()
+      print(count)
+      return HttpResponse(count)
+  else:
+    HttpResponseRedirect("{% url 'login' %}")
+
+
 
 
 # Display the comments of a thread

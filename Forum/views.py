@@ -60,14 +60,15 @@ def get_profile(request):
             # redirect to a new URL
             form = form.cleaned_data
             UserProfile.updateProfile(request, form)
-            return HttpResponseRedirect('')
+            return HttpResponseRedirect('/')
         else:
             print(form.errors)
 
     else:
-        form = ProfileForm()
+      sig = request.user.userprofile.Signature
+      form = ProfileForm({'Signature': sig})
     context = {
-        'form': form,
+      'form': form,
     }
 
     return render(request, 'user_profile/index.html', context)

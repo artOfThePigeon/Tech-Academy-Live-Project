@@ -38,8 +38,13 @@ h1
     grid-template-areas:
         "navbar navbar navbar"
         "lside main rside"
-        "footer footer footer"
-    grid-gsp: .50em;
+        "footer footer footer";
+    grid-gap: .50em;
+}
+
+.navbar
+{
+    grid-area: navbar;
 }
 
 /* A panel layout for use inside the forum container */

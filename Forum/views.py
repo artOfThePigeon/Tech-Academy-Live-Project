@@ -16,9 +16,9 @@ from django.db.models import Q
 from functools import reduce
 from django.views.generic.edit import FormView, CreateView
 from django.views.decorators.http import require_http_methods
-from django.http import JsonResponse
-from .forms import ProfileForm, SignUpForm, CommentCreateForm, ThreadCreateForm, FriendRequestForm
-from .models import UserProfile, FriendConnection
+
+from .forms import ProfileForm, SignUpForm, CommentCreateForm, ThreadCreateForm
+from .models import UserProfile
 # Create your views here.
 
 
@@ -47,6 +47,10 @@ def home_view(request):
     threads = {"threads": data}
     return render(request, 'index.html', threads)
 
+
+class UserProfileListView(generic.ListView):
+    template_name = 'user_profile/index.html'
+    context_object_name = 'users'
 
 
 def get_profile(request):
@@ -177,6 +181,8 @@ def message(request):
         # Defining where text will come from on template
         content = request.POST['content']
         reciever = request.POST['reciever']
+        # Add subject line to message
+        subject = request.POST['subject']
 
         # Gets the username of the receiver from the db
         reciever_used = User.objects.get(username=reciever)
@@ -185,6 +191,7 @@ def message(request):
         message = Message()  # Creating connection to the db
         # Setting respective table fields to template content
         message.MessageBody = content
+        message.Subject = subject
         message.ReceivingUser = reciever_used
         message.SendingUser = sender_used
         message.save()  # Saving to the db
@@ -256,68 +263,3 @@ def messagedetails(request):
 
     # Return the list of messages to the template to be placed
     return render(request, 'Message/messagedetails.html', {'messages': messages})
-
-
-
-def autocomplete(request):
-  if request.is_ajax():
-    user = request.user.id
-    friends = FriendConnection.objects.filter(Q(ReceivingUser = user) |
-                                              Q(SendingUser = user))
-    sending_friends_ids = friends.values('SendingUser')
-    receiving_friends_ids = friends.values('ReceivingUser')
-
-    queryset = User.objects.exclude(Q(id__in=sending_friends_ids) | \
-     Q(id__in=receiving_friends_ids)) \
-    .filter(username__startswith=request.GET.get('search', None))
-    list = []
-    for i in queryset:
-      list.append(i.username)
-    data = {
-      'list': list
-    }
-    return JsonResponse(data)
-
-
-
-def change_friend_status(request, **kwargs):
-  if request.user.is_authenticated:
-    if request.method == 'POST':
-      if not 'add_friend' in request.POST:
-        user = request.user
-        friendID = kwargs['id']
-        friend = FriendConnection.objects.get(id=friendID)
-        if 'confirm_friend' in request.POST:
-          confirmed = not friend.IsConfirmed
-          friend.IsConfirmed = confirmed
-          friend.save(update_fields=['IsConfirmed'])
-        elif 'delete_friend' in request.POST:
-          friend.delete()
-      else:
-        try:
-          user = User.objects.get(id = kwargs['id'])
-          friend = User.objects.get(username = request.POST.get('friend_name', None))
-          FriendConnection.objects.create(IsConfirmed=0, SendingUser=user, ReceivingUser = friend)
-        except:
-          return HttpResponseBadRequest()
-    return HttpResponseRedirect("/home/friends/")
-
-
-class FriendListView(generic.ListView):
-  model = FriendConnection
-  template_name = 'forum/friend_list.html'
-  context_object_name = 'friends'
-
-  def get_queryset(self):
-    userID = self.request.user
-
-    return FriendConnection.objects.filter((Q(IsConfirmed=1) & (Q(ReceivingUser_id = userID) | Q(SendingUser_id = userID)))).all()
-
-
-  def get_context_data(self, *args, **kwargs):
-    context = super(FriendListView, self).get_context_data(**kwargs)
-    userID = self.request.user
-    context['unconfirmed_friends'] = FriendConnection.objects.filter((Q(IsConfirmed=0) &
-                                          (Q(ReceivingUser_id = userID) |
-                                          Q(SendingUser_id = userID))))
-    return context

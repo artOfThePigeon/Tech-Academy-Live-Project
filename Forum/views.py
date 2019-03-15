@@ -16,9 +16,9 @@ from django.db.models import Q
 from functools import reduce
 from django.views.generic.edit import FormView, CreateView
 from django.views.decorators.http import require_http_methods
-
-from .forms import ProfileForm, SignUpForm, CommentCreateForm, ThreadCreateForm
-from .models import UserProfile
+from django.http import JsonResponse
+from .forms import ProfileForm, SignUpForm, CommentCreateForm, ThreadCreateForm, FriendRequestForm
+from .models import UserProfile, FriendConnection, Upvote
 # Create your views here.
 
 
@@ -34,7 +34,6 @@ def dictfetchall(query):
             dict(zip(columns, row))
             for row in cursor.fetchall()
         ]
-
 
 
 
@@ -76,6 +75,7 @@ def get_profile(request):
     }
 
     return render(request, 'user_profile/index.html', context)
+
 
 
 def register(request):
@@ -130,6 +130,8 @@ class ThreadCreateView(CreateView):
     form.save()
     return HttpResponseRedirect("/home/thread/{}/".format(form.id))
 
+
+
 @login_required
 @require_http_methods(['POST'])
 def create_comment(request, slug):
@@ -140,13 +142,38 @@ def create_comment(request, slug):
           thread = Thread.objects.get(id=slug)
           form.User = request.user
           form.Thread = thread
-
           thread.DateUpdate = datetime.date.today().strftime('%Y-%m-%d')
+          count = Comment.objects.filter(Thread_id=slug).count()
+          # count + 1 because it won't count the post we are about to make
+          thread.PostCount = count + 1
           form.save()
           thread.save()
           return HttpResponseRedirect("/home/thread/{}/".format(slug))
   else:
     return HttpResponseBadRequest()
+
+
+
+def upvote_thread(request, *args, **kwargs):
+  if request.user.is_authenticated:
+    if request.method == 'GET':
+      userID = request.user.id
+      threadID = kwargs['id']
+      user_upvoted_thread = Upvote.objects.filter(Thread_id=threadID, User_id=userID)
+      if user_upvoted_thread.count():
+        user_upvoted_thread.delete()
+      else:
+        Upvote.objects.create(Thread_id=threadID, User_id=userID)
+
+      thread = Thread.objects.get(id=threadID)
+      count = Upvote.objects.filter(Thread_id=threadID).count()
+      thread.UpVoteCount = count
+      thread.save()
+      return HttpResponse(count)
+  else:
+    HttpResponseRedirect("{% url 'login' %}")
+
+
 
 
 # Display the comments of a thread
@@ -169,6 +196,7 @@ class CommentThread(generic.ListView):
         context['form'] = CommentCreateForm()
 
         return context
+
 
 
 # Messaging
@@ -228,9 +256,9 @@ def message(request):
         # Return list of friends usernames
         return render(request, 'Message/message.html', context)
 
+
+
 # Main Inbox
-
-
 def inbox(request):
 
     # Populate all messages to current user.
@@ -245,9 +273,10 @@ def inbox(request):
     else:
         return render(request, 'Message/inbox.html', {})
 
+
+
+
 # Message Details (Shows all messages from selected sender)
-
-
 def messagedetails(request):
 
     currentUser = request.user.id  # Set current user
@@ -263,3 +292,70 @@ def messagedetails(request):
 
     # Return the list of messages to the template to be placed
     return render(request, 'Message/messagedetails.html', {'messages': messages})
+
+
+# Use AJAX to display autocomplete search results in the friends page
+def autocomplete(request):
+  if request.is_ajax():
+    user = request.user.id
+    friends = FriendConnection.objects.filter(Q(ReceivingUser = user) |
+                                              Q(SendingUser = user))
+    sending_friends_ids = friends.values('SendingUser')
+    receiving_friends_ids = friends.values('ReceivingUser')
+
+    queryset = User.objects.exclude(Q(id__in=sending_friends_ids) | \
+     Q(id__in=receiving_friends_ids)) \
+    .filter(username__startswith=request.GET.get('search', None))
+    list = []
+    for i in queryset:
+      list.append(i.username)
+    data = {
+      'list': list
+    }
+    return JsonResponse(data)
+
+
+
+def change_friend_status(request, **kwargs):
+  if request.user.is_authenticated:
+    if request.method == 'POST':
+      # If we aren't adding a friend, then see if we are confirming or deleting
+      if not 'add_friend' in request.POST:
+        user = request.user
+        friendID = kwargs['id']
+        friend = FriendConnection.objects.get(id=friendID)
+        if 'confirm_friend' in request.POST:
+          confirmed = not friend.IsConfirmed
+          friend.IsConfirmed = confirmed
+          friend.save(update_fields=['IsConfirmed'])
+        elif 'delete_friend' in request.POST:
+          friend.delete()
+      # This is if we are adding a friend
+      else:
+        try:
+          user = User.objects.get(id = kwargs['id'])
+          friend = User.objects.get(username = request.POST.get('friend_name', None))
+          FriendConnection.objects.create(IsConfirmed=0, SendingUser=user, ReceivingUser = friend)
+        except:
+          return HttpResponseBadRequest()
+    return HttpResponseRedirect("/home/friends/")
+
+
+class FriendListView(generic.ListView):
+  model = FriendConnection
+  template_name = 'forum/friend_list.html'
+  context_object_name = 'friends'
+
+  def get_queryset(self):
+    userID = self.request.user
+
+    return FriendConnection.objects.filter((Q(IsConfirmed=1) & (Q(ReceivingUser_id = userID) | Q(SendingUser_id = userID)))).all()
+
+
+  def get_context_data(self, *args, **kwargs):
+    context = super(FriendListView, self).get_context_data(**kwargs)
+    userID = self.request.user
+    context['unconfirmed_friends'] = FriendConnection.objects.filter((Q(IsConfirmed=0) &
+                                          (Q(ReceivingUser_id = userID) |
+                                          Q(SendingUser_id = userID))))
+    return context

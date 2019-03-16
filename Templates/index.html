@@ -1,7 +1,9 @@
-{% include 'base.html' %}
+{% extends 'base.html' %}
+{% block content %}
 <h1>The Tech Academy Forum</h1>
 <h2>Latest active threads:</h2>
 {% for thread in threads %}
 📄 <a href="{% url 'Forum:thread' thread.id %}">{{ thread.ThreadTitle }}, active on {{ thread.DateUpdate }}</a>
 <br>
 {% endfor %}
+{% endblock %}

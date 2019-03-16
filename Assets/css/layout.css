@@ -10,8 +10,7 @@ html
 
 body {
 
-    position: relative;
-    overflow: hidden;
+    position: relative;   
     font-family: "Roboto", sans-serif;
 }
 
@@ -39,7 +38,7 @@ h1
         "navbar navbar navbar"
         "lside main rside"
         "footer footer footer"
-    grid-gsp: .50em;
+    grid-gap: .50em;
 }
 
 /* A panel layout for use inside the forum container */
@@ -60,3 +59,79 @@ h1
 {
     text-align: center;
 } 
+
+
+/*================================================================
+
+below styling applies to comment_section.html and included templates
+
+===================================================================*/
+
+/*styling for thread_header.html*/
+.thread-container {
+    margin: 50px;
+}
+.thread-header {
+    text-align: left
+}
+
+.thread-data {
+  background-color: none; 
+  list-style-type: none;
+  text-align: left;
+  margin: 0;
+  padding: 0;
+}
+
+.thread-data li {
+    display: inline-block;
+    padding-bottom: 10px;
+    margin-right: 20px;
+}
+
+.thread-main {
+    display: grid;
+    grid-template-columns: 1fr 8fr;
+    grid-gap: 5px;
+    padding: 5px;
+    text-align: left;
+}
+
+
+.post-side { 
+    grid-column-start: 1; margin-right: 20px;
+}
+
+.post-body { 
+    grid-area: 1 / 2 / span 1 / span 7; 
+}
+
+.post-comments { 
+    grid-column-start: 2;
+    grid-row-start: 2;
+    grid-column-end: 7;
+}
+
+
+/*styling for comment_section.html*/
+.auto-comment-container {
+    grid-gap: 5px;
+    padding: 5px;
+
+    display: grid;
+    grid-auto-flow: row;
+    grid-template-columns:1fr 8fr;
+    grid-template-areas: 
+        "side body";
+
+}
+
+.auto-comment-container > div {
+    text-align: left;
+    padding: 5px 0;
+}
+
+/*styling for comment.html*/
+.leave-comment { 
+    grid-column-start: 2;
+}

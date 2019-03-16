@@ -1,0 +1,24 @@
+
+<div>
+    <br>
+    <br>
+    <h3>Comments:</h3>
+    <br>
+</div>
+
+    {% for comment in comments %}
+
+<div class="auto-comment-container">  
+<div class="post-side">
+    <img src="{{ comment.User.userprofile.Avatar.url }}" alt="{{ comment.User.username }} Avatar" width="100">
+    <p>{{ comment.User.username }}</p>
+    <p>{{ comment.User.userprofile.Signature}}</p>
+    <br>
+    <p>{{ comment.DateCreated }}</p>
+</div>
+<div class="post-body">
+    <p>{{ comment.CommentBody }} </p>
+</div>
+</div>
+
+    {% endfor %}

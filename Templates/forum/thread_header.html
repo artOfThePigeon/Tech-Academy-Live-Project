@@ -1,0 +1,24 @@
+
+<div class="thread-header">
+        <ul class="thread-data">
+            <li><h5>{{thread.Topic.TopicTitle}} | {{ thread.ThreadTitle }}</h5></li>
+            <li><h6>| Posts: {{ thread.PostCount}} | Views: {{ thread.ViewCount }}</h6>
+        </ul>
+</div>
+<div class="thread-main">
+    <div class="post-side">
+        <img src="{{ thread.Author.userprofile.Avatar.url }}" alt="{{thread.Author.username }} Avatar" width="150">
+        <p>Author: {{ thread.Author.username }}</p>
+        <p>{{ thread.Author.userprofile.Signature }}</p>
+    </div>
+    <div class="post-body">
+        <div>
+            <h2><b>{{ thread.ThreadTitle }}</b></h2>
+            <br>
+            <p> posted by {{ thread.Author.username }} | {{ thread.DateStarted }}</p>
+    </div>
+    <div>
+        </br>
+        <h3>{{ thread.ThreadBody }}</h3>
+    </div>
+</div>

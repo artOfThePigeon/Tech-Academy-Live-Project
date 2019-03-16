@@ -7,6 +7,7 @@ from . import views
 app_name = 'Forum'
 urlpatterns = [
   path('register/', views.register, name='register'),
+  path('about/', views.about, name='about'), 
   path('profile/', views.get_profile, name='get_profile'),
   path('message', views.message, name='message'),
   path('inbox', views.inbox, name='inbox'),

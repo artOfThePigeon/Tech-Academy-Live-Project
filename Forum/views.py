@@ -263,3 +263,6 @@ def messagedetails(request):
 
     # Return the list of messages to the template to be placed
     return render(request, 'Message/messagedetails.html', {'messages': messages})
+
+def about(request):
+    return render(request, 'about.html')

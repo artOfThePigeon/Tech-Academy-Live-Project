@@ -18,7 +18,7 @@ from django.views.generic.edit import FormView, CreateView
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 from .forms import ProfileForm, SignUpForm, CommentCreateForm, ThreadCreateForm, FriendRequestForm
-from .models import UserProfile, FriendConnection
+from .models import UserProfile, FriendConnection, Upvote
 # Create your views here.
 
 
@@ -37,7 +37,6 @@ def dictfetchall(query):
 
 
 
-
 # Account Views
 @login_required
 def home_view(request):
@@ -47,6 +46,10 @@ def home_view(request):
     threads = {"threads": data}
     return render(request, 'index.html', threads)
 
+
+class UserProfileListView(generic.ListView):
+    template_name = 'user_profile/index.html'
+    context_object_name = 'users'
 
 
 def get_profile(request):
@@ -60,17 +63,19 @@ def get_profile(request):
             # redirect to a new URL
             form = form.cleaned_data
             UserProfile.updateProfile(request, form)
-            return HttpResponseRedirect('')
+            return HttpResponseRedirect('/')
         else:
             print(form.errors)
 
     else:
-        form = ProfileForm()
+      sig = request.user.userprofile.Signature
+      form = ProfileForm({'Signature': sig})
     context = {
-        'form': form,
+      'form': form,
     }
 
     return render(request, 'user_profile/index.html', context)
+
 
 
 def register(request):
@@ -125,6 +130,8 @@ class ThreadCreateView(CreateView):
     form.save()
     return HttpResponseRedirect("/home/thread/{}/".format(form.id))
 
+
+
 @login_required
 @require_http_methods(['POST'])
 def create_comment(request, slug):
@@ -135,13 +142,38 @@ def create_comment(request, slug):
           thread = Thread.objects.get(id=slug)
           form.User = request.user
           form.Thread = thread
-
           thread.DateUpdate = datetime.date.today().strftime('%Y-%m-%d')
+          count = Comment.objects.filter(Thread_id=slug).count()
+          # count + 1 because it won't count the post we are about to make
+          thread.PostCount = count + 1
           form.save()
           thread.save()
           return HttpResponseRedirect("/home/thread/{}/".format(slug))
   else:
     return HttpResponseBadRequest()
+
+
+
+def upvote_thread(request, *args, **kwargs):
+  if request.user.is_authenticated:
+    if request.method == 'GET':
+      userID = request.user.id
+      threadID = kwargs['id']
+      user_upvoted_thread = Upvote.objects.filter(Thread_id=threadID, User_id=userID)
+      if user_upvoted_thread.count():
+        user_upvoted_thread.delete()
+      else:
+        Upvote.objects.create(Thread_id=threadID, User_id=userID)
+
+      thread = Thread.objects.get(id=threadID)
+      count = Upvote.objects.filter(Thread_id=threadID).count()
+      thread.UpVoteCount = count
+      thread.save()
+      return HttpResponse(count)
+  else:
+    HttpResponseRedirect("{% url 'login' %}")
+
+
 
 
 # Display the comments of a thread
@@ -166,6 +198,7 @@ class CommentThread(generic.ListView):
         return context
 
 
+
 # Messaging
 def message(request):
 
@@ -176,6 +209,8 @@ def message(request):
         # Defining where text will come from on template
         content = request.POST['content']
         reciever = request.POST['reciever']
+        # Add subject line to message
+        subject = request.POST['subject']
 
         # Gets the username of the receiver from the db
         reciever_used = User.objects.get(username=reciever)
@@ -184,6 +219,7 @@ def message(request):
         message = Message()  # Creating connection to the db
         # Setting respective table fields to template content
         message.MessageBody = content
+        message.Subject = subject
         message.ReceivingUser = reciever_used
         message.SendingUser = sender_used
         message.save()  # Saving to the db
@@ -220,9 +256,9 @@ def message(request):
         # Return list of friends usernames
         return render(request, 'Message/message.html', context)
 
+
+
 # Main Inbox
-
-
 def inbox(request):
 
     # Populate all messages to current user.
@@ -237,9 +273,10 @@ def inbox(request):
     else:
         return render(request, 'Message/inbox.html', {})
 
+
+
+
 # Message Details (Shows all messages from selected sender)
-
-
 def messagedetails(request):
 
     currentUser = request.user.id  # Set current user
@@ -257,7 +294,7 @@ def messagedetails(request):
     return render(request, 'Message/messagedetails.html', {'messages': messages})
 
 
-
+# Use AJAX to display autocomplete search results in the friends page
 def autocomplete(request):
   if request.is_ajax():
     user = request.user.id
@@ -282,6 +319,7 @@ def autocomplete(request):
 def change_friend_status(request, **kwargs):
   if request.user.is_authenticated:
     if request.method == 'POST':
+      # If we aren't adding a friend, then see if we are confirming or deleting
       if not 'add_friend' in request.POST:
         user = request.user
         friendID = kwargs['id']
@@ -292,6 +330,7 @@ def change_friend_status(request, **kwargs):
           friend.save(update_fields=['IsConfirmed'])
         elif 'delete_friend' in request.POST:
           friend.delete()
+      # This is if we are adding a friend
       else:
         try:
           user = User.objects.get(id = kwargs['id'])

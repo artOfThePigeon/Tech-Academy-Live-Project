@@ -3,11 +3,11 @@ from django.forms import ModelForm
 from .models import *
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.db.models import Q
 
 class ProfileForm(forms.Form):
-  Signature = forms.CharField(label='Signature', max_length=200)
+  Signature = forms.CharField(label='Signature', max_length=200, widget=forms.Textarea)
   Avatar = forms.ImageField(label='Avatar', help_text='max 42MB', required=False)
+
   class Meta:
     model = UserProfile
     fields = ('Signature', 'Avatar')
@@ -33,6 +33,7 @@ class ThreadCreateForm(ModelForm):
     widget=forms.Textarea,
   )
 
+
   class Meta:
     model = Thread
     fields = ('ThreadTitle', 'ThreadBody', 'Topic',)
@@ -49,8 +50,6 @@ class CommentCreateForm(ModelForm):
   class Meta:
     model = Comment
     fields = ['CommentBody']
-
-
 
 class FriendRequestForm(ModelForm):
   id = forms.ModelChoiceField(

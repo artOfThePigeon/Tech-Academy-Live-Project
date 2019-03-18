@@ -70,6 +70,7 @@ class Thread(models.Model):
     DateStarted = models.DateField()
     PostCount = models.IntegerField()
     DateUpdate = models.DateField()
+    UpVoteCount = models.IntegerField(default=0)
 
     class Meta:
       ordering = ['-DateUpdate']
@@ -86,12 +87,13 @@ class FriendConnection(models.Model):
     SendingUser = models.ForeignKey(User,related_name="FriendSender", on_delete=models.CASCADE)
     IsConfirmed = models.BooleanField()
 
-    def __str__(self):
-      return self.ReceivingUser.username
-
 class Message(models.Model):
     ReceivingUser = models.ForeignKey(User,related_name="MessageReceiver", on_delete=models.CASCADE)
     SendingUser = models.ForeignKey(User,related_name="MessageSender", on_delete=models.CASCADE)
     Subject = models.CharField(max_length=50)
     MessageBody = models.CharField(max_length=1000)
     DateSent = models.DateTimeField(auto_now=True)
+
+class Upvote(models.Model):
+  User = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+  Thread = models.ForeignKey(Thread, on_delete=models.CASCADE)

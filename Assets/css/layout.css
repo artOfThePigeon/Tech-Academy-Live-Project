@@ -38,8 +38,18 @@ h1
     grid-template-areas:
         "navbar navbar navbar"
         "lside main rside"
-        "footer footer footer"
-    grid-gsp: .50em;
+        "footer footer footer";
+    grid-gap: .50em;
+}
+
+.navbar
+{
+    grid-area: navbar;
+}
+
+.main 
+{
+    grid-area: main;
 }
 
 /* A panel layout for use inside the forum container */
@@ -54,3 +64,9 @@ h1
 {
     padding: 5 5;
 }
+
+/* Center the 'Messages' text on messagedetails.html */
+.msgMessages
+{
+    text-align: center;
+} 

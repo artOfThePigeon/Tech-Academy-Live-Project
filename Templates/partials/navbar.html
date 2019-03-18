@@ -1,0 +1,32 @@
+<!--
+Free NavBar templates online: https://freefrontend.com/css-menu/
+  DROPDOWN MENU
+-->
+<!-- Gives navbar the navbar property-->
+<div class="navbar">
+    <nav class="nav">
+        <ul>
+            <li><a href="#">Home</a>
+            <li><a href="#">Forum</a>
+            <li class="drop">
+                <a href="#">User</a>
+                <ul class="dropdown">
+                    <li><a href="#">Profile</a></li>
+                    <li><a href="#">Settings</a></li>
+                    <li><a href="#">Maybe Something Else</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Register</a>
+            <li><a href="#">About</a>
+        </ul>
+        <!--  JQuery and JS Runtime Include -->
+        <!-- These two script tags fir the JQuery librsry snd the Navbar.js were placed here so that they
+        will populate into the body section of a web page that references this navbar.html inclusion.
+        It is necessary to make the rollover functionality behave during runtime.
+        -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="/static/js/navbar.js"></script>
+        <!--  END JQuery and JS Runtime Include -->
+    </nav>
+</div>
+

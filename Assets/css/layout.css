@@ -70,3 +70,8 @@ h1
 {
     text-align: center;
 } 
+
+.login 
+{
+    grid-area: main;
+}

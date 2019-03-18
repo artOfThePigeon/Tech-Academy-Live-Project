@@ -10,6 +10,7 @@ urlpatterns = [
   path('profile/', views.get_profile, name='get_profile'),
   path('message', views.message, name='message'),
   path('inbox', views.inbox, name='inbox'),
+  path('announcement', views.AnnouncementCreateView, name='announcement'),
   path('msg_detail', views.messagedetails, name='messagedetail'),
   path('topics/', views.TopicsView.as_view(), name='topics'),
   path('thread/<slug:pk>/', views.CommentThread.as_view(), name='thread'),

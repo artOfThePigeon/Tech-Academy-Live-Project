@@ -97,3 +97,12 @@ class Message(models.Model):
 class Upvote(models.Model):
   User = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
   Thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
+
+class Announcement(models.Model):
+    Author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    DateAdded = models.DateField()
+    AnnounceTitle = models.CharField(max_length=25)
+    AnnounceBody = models.CharField(max_length=1000)
+
+    class Meta:
+      get_latest_by = "DateAdded"

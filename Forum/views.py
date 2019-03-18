@@ -17,8 +17,8 @@ from functools import reduce
 from django.views.generic.edit import FormView, CreateView
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
-from .forms import ProfileForm, SignUpForm, CommentCreateForm, ThreadCreateForm, FriendRequestForm
-from .models import UserProfile, FriendConnection, Upvote
+from .forms import ProfileForm, SignUpForm, CommentCreateForm, ThreadCreateForm, FriendRequestForm, AnnounceCreateForm
+from .models import UserProfile, FriendConnection, Upvote, Announcement
 # Create your views here.
 
 
@@ -359,3 +359,16 @@ class FriendListView(generic.ListView):
                                           (Q(ReceivingUser_id = userID) |
                                           Q(SendingUser_id = userID))))
     return context
+
+class AnnouncementCreateView(CreateView):
+  template_name = 'announcement.html'
+  model = Announcement
+  form_class = AnnounceCreateForm
+
+  def form_valid(self, form):
+    form = form.save(commit=False)
+    form.Author = self.request.user
+    today = datetime.date.today().strftime('%Y-%m-%d')
+    form.DateAdded = today
+    form.save()
+    return HttpResponseRedirect("/home/".format(form.id))

@@ -58,3 +58,17 @@ class FriendRequestForm(ModelForm):
   class Meta:
     model = FriendConnection
     fields = ['id']
+
+class AnnounceCreateForm(ModelForm):
+  Title = forms.CharField(max_length=200, min_length=1, strip=True)
+  Body = forms.CharField(
+    max_length=1000,
+    min_length=1,
+    strip=True,
+    widget=forms.Textarea,
+  )
+
+
+  class Meta:
+    model = Announcement
+    fields = ('Title', 'Body',)

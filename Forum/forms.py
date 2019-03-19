@@ -60,8 +60,8 @@ class FriendRequestForm(ModelForm):
     fields = ['id']
 
 class AnnounceCreateForm(ModelForm):
-  AnnounceTitle = forms.CharField(max_length=200, min_length=1, strip=True)
-  AnnounceBody = forms.CharField(
+  Title = forms.CharField(max_length=200, min_length=1, strip=True)
+  Body = forms.CharField(
     max_length=1000,
     min_length=1,
     strip=True,
@@ -71,4 +71,4 @@ class AnnounceCreateForm(ModelForm):
 
   class Meta:
     model = Announcement
-    fields = ('AnnounceTitle', 'AnnounceBody',)
+    fields = ('Title', 'Body',)

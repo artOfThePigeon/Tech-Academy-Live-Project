@@ -371,4 +371,4 @@ class AnnouncementCreateView(CreateView):
     today = datetime.date.today().strftime('%Y-%m-%d')
     form.DateAdded = today
     form.save()
-    return HttpResponseRedirect("/home/".format(form.id))
+    return HttpResponseRedirect("/".format(form.id))

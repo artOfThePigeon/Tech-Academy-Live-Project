@@ -101,8 +101,8 @@ class Upvote(models.Model):
 class Announcement(models.Model):
     Author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     DateAdded = models.DateField()
-    AnnounceTitle = models.CharField(max_length=25)
-    AnnounceBody = models.CharField(max_length=1000)
+    Title = models.CharField(max_length=25)
+    Body = models.CharField(max_length=1000)
 
     class Meta:
       get_latest_by = "DateAdded"

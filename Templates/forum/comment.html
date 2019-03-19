@@ -1,10 +1,8 @@
 
-{% block content %}
-<div>
-    <form method="POST" enctype="multipart/form-data" class="comment_form">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit comment</button>
-    </form>
-</div>
-{% endblock %}
+<h3> Leave a comment: </h3>
+<br>
+<form method="POST" action="{% url 'Forum:post_comment' thread.id %}" enctype="multipart/form-data" class="create_comment_form">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Submit comment</button>
+</form>

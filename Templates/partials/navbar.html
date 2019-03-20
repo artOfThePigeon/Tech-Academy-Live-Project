@@ -6,18 +6,13 @@ Free NavBar templates online: https://freefrontend.com/css-menu/
 <div class="navbar">
     <nav class="nav">
         <ul>
-            <li><a href="#">Home</a>
-            <li><a href="#">Forum</a>
-            <li class="drop">
-                <a href="#">User</a>
-                <ul class="dropdown">
-                    <li><a href="#">Profile</a></li>
-                    <li><a href="#">Settings</a></li>
-                    <li><a href="#">Maybe Something Else</a></li>
-                </ul>
-            </li>
-            <li><a href="#">Register</a>
-            <li><a href="#">About</a>
+            <li><a href="/">Home</a></li>
+            <li><a href="{% url 'Forum:topics' %}">Forum</a>
+            <li><a href="{% url 'Forum:inbox' %}">Inbox</a>
+            <li><a href="{% url 'Forum:get_profile' %}">Profile</a>
+            <li><a href="{% url 'Forum:friends' %}">Friends</a>
+            <li><a href="{% url 'Forum:register' %}">Register</a>
+            <li><a href="{% url 'Forum:about' %}">About</a>
         </ul>
         <!--  JQuery and JS Runtime Include -->
         <!-- These two script tags fir the JQuery librsry snd the Navbar.js were placed here so that they

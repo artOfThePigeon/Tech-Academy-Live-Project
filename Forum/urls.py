@@ -21,4 +21,5 @@ urlpatterns = [
   re_path(r'^friends/(?P<id>\w+)/', views.change_friend_status, name='friend_status'),
   re_path(r'^ajax/autocomplete/$', views.autocomplete, name='ajax_autocomplete'),
   re_path(r'^thread/upvote/(?P<id>\w+)$', views.upvote_thread, name='upvote'),
+  path('meetupgroup/', views.MeetupGroupView.as_view(), name='meetupgroup')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

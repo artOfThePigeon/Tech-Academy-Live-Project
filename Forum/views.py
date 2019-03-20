@@ -17,8 +17,8 @@ from functools import reduce
 from django.views.generic.edit import FormView, CreateView
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
-from .forms import ProfileForm, SignUpForm, CommentCreateForm, ThreadCreateForm, FriendRequestForm, AnnounceCreateForm
-from .models import UserProfile, FriendConnection, Upvote, Announcement
+from .forms import ProfileForm, SignUpForm, CommentCreateForm, ThreadCreateForm, FriendRequestForm, AnnounceCreateForm, MeetupGroupForm
+from .models import UserProfile, FriendConnection, Upvote, Announcement, MeetupGroup
 # Create your views here.
 
 
@@ -372,5 +372,18 @@ class AnnouncementCreateView(CreateView):
     form.Author = self.request.user
     today = datetime.date.today().strftime('%Y-%m-%d')
     form.DateAdded = today
+    form.save()
+    return HttpResponseRedirect("/".format(form.id))
+
+class MeetupGroupView(CreateView):
+  template_name = 'addmeetupgroup.html'
+  model = MeetupGroup
+  form_class= MeetupGroupForm
+
+  def form_valid(self, form):
+    form = form.save(commit=False)
+    form.User = self.request.user
+    date = datetime.date.today()
+    form.DateUpdated = date
     form.save()
     return HttpResponseRedirect("/".format(form.id))

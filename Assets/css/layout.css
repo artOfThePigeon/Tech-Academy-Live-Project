@@ -41,11 +41,6 @@ h1
     grid-gap: .50em;
 }
 
-.main 
-{
-    grid-area:main;
-}
-
 .navbar
 {
     grid-area: navbar;

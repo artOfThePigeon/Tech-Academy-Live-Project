@@ -74,7 +74,7 @@ class AnnounceCreateForm(ModelForm):
     fields = ('Title', 'Body',)
 
 class MeetupGroupForm(ModelForm):
-  GroupUrl = forms.CharField(max_length=20, min_length=5, strip=True)
+  GroupUrl = forms.CharField(max_length=150, min_length=5, strip=True)
   GroupName = forms.CharField(max_length=50, min_length=5, strip=True)
 
   class Meta:

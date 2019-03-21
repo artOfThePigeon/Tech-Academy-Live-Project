@@ -192,11 +192,14 @@ class CommentThread(generic.ListView):
     def get_context_data(self, *args, **kwargs):
         context = super(CommentThread, self).get_context_data(**kwargs)
         pk = self.kwargs['pk']
+        thread = Thread.objects.get(id = pk)
+        count = thread.ViewCount
+        thread.ViewCount = count + 1
+        thread.save()
         context['thread'] = Thread.objects.filter(id = pk).last
         context['form'] = CommentCreateForm()
 
         return context
-
 
 
 # Messaging

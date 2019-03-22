@@ -43,6 +43,7 @@ h1
 }
 
 
+
 .lside {
     grid-area: lside;
 }
@@ -55,6 +56,8 @@ h1
     grid-area: footer;
 
 }
+
+
 
 .navbar
 {

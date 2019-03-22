@@ -109,6 +109,6 @@ class Announcement(models.Model):
 
 class MeetupGroup(models.Model):
     User = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
-    GroupUrl = models.CharField(max_length=20)
+    GroupUrl = models.CharField(max_length=150)
     GroupName = models.CharField(max_length=50)
     DateUpdated = models.DateTimeField(auto_now=True)

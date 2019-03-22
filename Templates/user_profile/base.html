@@ -1,11 +1,25 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
+﻿{% load static from staticfiles %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
     <title>Profile Management</title>
-  </head>
-  <body>
-    {% block content %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {# Global stylesheets #}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/layout.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/navbar.css' %}">
+    {% block extra_css %}
     {% endblock %}
-  </body>
+</head>
+<body>
+    <main>
+        {% include "partials/navbar.html" %}
+        <div class="forum-container">
+            <header class="header-title">
+                <h1>{% block header %}{% endblock %}</h1>
+            </header>
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+</body>
 </html>

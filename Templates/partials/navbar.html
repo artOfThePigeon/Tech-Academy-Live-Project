@@ -3,16 +3,17 @@ Free NavBar templates online: https://freefrontend.com/css-menu/
   DROPDOWN MENU
 -->
 <!-- Gives navbar the navbar property-->
-<div class="navbar">
+    
     <nav class="nav">
         <ul>
+            <li><img src="/media/logo/tta.PNG" style="width:100px;height:50px;padding:0;margin:0"></li>
             <li><a href="/">Home</a></li>
             <li><a href="{% url 'Forum:topics' %}">Forum</a>
             <li><a href="{% url 'Forum:inbox' %}">Inbox</a>
             <li><a href="{% url 'Forum:get_profile' %}">Profile</a>
             <li><a href="{% url 'Forum:friends' %}">Friends</a>
             <li><a href="{% url 'Forum:register' %}">Register</a>
-            <li><a href="{% url 'Forum:about' %}">About</a>
+            <li><a href="{% url 'Forum:about' %}">About</a></li>
         </ul>
         <!--  JQuery and JS Runtime Include -->
         <!-- These two script tags fir the JQuery librsry snd the Navbar.js were placed here so that they
@@ -23,5 +24,7 @@ Free NavBar templates online: https://freefrontend.com/css-menu/
         <script src="/static/js/navbar.js"></script>
         <!--  END JQuery and JS Runtime Include -->
     </nav>
-</div>
+    
+
+
 

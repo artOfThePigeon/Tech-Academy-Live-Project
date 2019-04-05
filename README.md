@@ -2,10 +2,10 @@
 
 > A forum for The Tech Academy built in django with my classmates.
 ## Project Overview
-Over the course of 2 weeks, we held daily standups and built the foundation of an exciting forum for the next generation of Tech Academy students to complete. This was a great opportunity to practice SCRUM methodology with other students, and learn how Azure Devops is used in the real world. After creating our own branch, we would recieve our tasks from the devops board and then commit our changes in visual studio using git version control.
+Over the course of 2 weeks, we held daily standups and built the foundation of an exciting forum for the next generation of Tech Academy students to complete. This was a great opportunity to practice SCRUM methodology with other students, become very familiar with git version control, and learn how Azure Devops is used in the real world. After creating our own branch, we would recieve our tasks from the devops board and then commit our changes in Visual Studio.
 
 ### My Tasks
-> My specific tasks were to edit the templates of the home/forum and the post page. This meant I had to design a way for the posts to sensibly display in the correct page containers and update as new threads and posts were added. 
+> My specific tasks were to edit the templates of the home page and the post page. This meant I had to design a way for the posts to sensibly display in the correct page containers and update as new threads and posts were added. 
 
 - [Post Page](#Post-Page)
 - [Home Page](#Home-Page)
@@ -67,7 +67,7 @@ You can view the full code of each template, [thread_header.html](/Templates/for
 </div>
 
  ```
-As you can see, the div 'forum-container' has within it the div 'main.' The {block content} is within that. The CSS defines the grid layout of forum-container with 'main' being where you would expect it, the main section.
+The div 'forum-container' has within it the div 'main.' The {% block content %} tag is within that. This is where every page will start to render content. The CSS defines the grid layout of 'forum-container' with 'main' being where you would expect it, the center of the page.
 ```
 .forum-container {
     display: grid;
@@ -80,9 +80,11 @@ As you can see, the div 'forum-container' has within it the div 'main.' The {blo
     grid-gap: .50em; 
 }
 ```
-Everything within the div main will be right in the center of the page. 
+> Everything within the div 'main' will be right in the center of the page. In this case, nothing is defined for 'lside' and 'rside' so it consumes the entire viewport beneath the navbar. 
 
-From the first bit of code I pasted, you can see the {block content} tag designates thats where all the subsequent content will be placed. Also within that first bit of code, you'll see 'forum/thread_header.html' included. Within that template, notice the div class 'post-body': 
+!['image'](https://github.com/CreativeDave/Tech-Academy-Live-Project/blob/master/media/post-page1.png)
+
+From the first bit of code I pasted, you'll see 'forum/thread_header.html' is included using a template tag. If we look at a snippet of code from that template, there's a div class 'post-body': 
 ```
 <div class="post-body">
         <div>
@@ -94,15 +96,15 @@ From the first bit of code I pasted, you can see the {block content} tag designa
         <h3>{{ thread.ThreadBody }}</h3>
     </div>
  ```   
-The CSS below defines it beginning at row 1, column 2. So, within the 'main' section, its at the top and 1 column over to the right. (The first column is the post's user profile information).
+The CSS below defines it beginning at row 1, column 2. So, within the 'main' section, its at the very top, and 1 column over to the right. (The first column is the post's user profile information).
 ```
 .post-body { 
     grid-area: 1 / 2 / span 1 / span 7; 
 }
 ```
-This doesn't define the comment section however, only the initial thread's content. 
+This doesn't define the comment section however, *only the initial thread's content.* 
 
-The 'post-comments' section comes next, and is clearly defined in the CSS as: 
+For this, the 'post-comments' div was coded next, and is clearly defined in the CSS as: 
 ```
 .post-comments { 
     grid-column-start: 2;
@@ -110,7 +112,9 @@ The 'post-comments' section comes next, and is clearly defined in the CSS as:
     grid-column-end: 7;
 }
 ```
-Meaning, within the main section of the grid, beginning on row 2, just below the body of the initial post, with the commentor's profile info beginning on column 2 (1 over from the poster's profile info), and spanning 7 columns. So, the first comment is on row 2, the second is on row 3, the third on 4... But this doesn't account for the proper placement of new comments.
+Translated, content rendered under this div is falls within the 'main' section of the grid, beginning on row 2, just below the body of the initial post, with the commentor's profile info beginning on column 2 (1 over from the poster's profile info), and spanning 7 columns... 
+
+So, the first comment is on row 2, the second is on row 3, the third on 4... *But this doesn't account for the proper placement of new comments.*
 
 To acheive this, within the forum/comment_section.html (the 2nd section of the post-page code I pasted) I wrote:
 ```
@@ -150,7 +154,7 @@ Notice the 'auto-comment container.' This is how I got all of future user commen
 }
 ```
 
-I only defined two sections, 'side' for user profile information and 'body' for the post itself. When a user submits a comment, it auto-generates a new row for itself, continuing the patter, without moving over in columns. 
+I only defined two sections, 'side' for user profile information and 'body' for the post itself. When a user submits a comment, it auto-generates a new row for itself, continuing the pattern without moving over in columns. 
 
 ### Home-Page
 Similar to the post-page, the home-page needed a way for all new posts to display properly in the container without overflowing onto a new column. The inital template is simple and clean looking, thanks to django's template tags. 

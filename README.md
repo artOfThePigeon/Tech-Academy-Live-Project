@@ -1,5 +1,5 @@
 ![image'](https://github.com/CreativeDave/Tech-Academy-Live-Project/blob/master/media/TTATitle.png)
----
+
 > A forum for The Tech Academy built in django with my classmates.
 ## Project Overview
 Over the course of 2 weeks, we held daily standups and built the foundation of an exciting forum for the next generation of Tech Academy students to complete. This was a great opportunity to practice SCRUM methodology with other students, and learn how Azure Devops is used in the real world. After creating our own branch, we would recieve our tasks from the devops board and then commit our changes in visual studio using git version control.
@@ -153,4 +153,75 @@ Notice the 'auto-comment container.' This is how I got all of future user commen
 I only defined two sections, 'side' for user profile information and 'body' for the post itself. When a user submits a comment, it auto-generates a new row for itself, continuing the patter, without moving over in columns. 
 
 ### Home-Page
+Similar to the post-page, the home-page needed a way for all new posts to display properly in the container without overflowing onto a new column. The inital template is simple and clean looking, thanks to django's template tags. 
 
+```
+{% block content %}
+
+<div class="subject-head">
+	<h3>Recent posts</h3>
+</div>
+
+{% for thread in threads %}
+
+	<div class="auto-post">
+		<div class="lcol">
+			<p>📄</p>
+			<p>last active: {{ thread.DateUpdate }}</p>
+		</div>
+		<div class="rcol">
+			<a href="{% url 'Forum:thread' thread.id %}">{{ thread.ThreadTitle }}</a>
+		</div>
+			
+	</div>
+
+{% endfor %}
+
+{% endblock %}
+```
+
+
+
+Again I chose to use the ```grid-auto-flow: row;``` property, but this time I defined length and width with pixels, instead of the 'fr' measure. Everytime a new thread is created, it will create a new row in the 'main' section. This is defined by the 'auto-post' class in the CSS.
+
+```
+.auto-post {
+    display: grid;
+    padding-left: 5px;
+    grid-auto-flow: row;
+    grid-template-rows: 100px ;
+    grid-gap: 20px;
+    grid-template-columns: 100px 600px;
+    text-align: left;
+    border-left: 27px solid rgba(28,110,164,0.3);
+    border-radius: 10px 0px 0px 10px;
+    margin-bottom:10px;
+    padding-bottom:2px;
+    -webkit-box-shadow: 0px 10px 13px -7px #000000, 0px 17px 15px 5px rgba(114,202,255,0.42); 
+    box-shadow: 0px 10px 13px -11px #000000, 0px 17px 15px 5px rgba(114,202,255,0.35);
+    
+}
+```
+![image'](https://github.com/CreativeDave/Tech-Academy-Live-Project/blob/master/media/Screenshot%20from%202019-04-05%2012-04-18.png)
+
+'Auto-post' contains the divs 'rcol' and 'lcol' to display the date and title. I did not use an inline block, instead I specifically gave them their own columns. 
+```
+.lcol {
+    grid-column-start: 1;
+    margin-left: 10px;
+    font-size: 14px;
+
+}
+
+.rcol {
+    grid-column-start: 2; 
+    margin-left: 0px;
+    padding-top:18px;
+    border-radius: 0px 0px 13px 0px;
+   
+
+}
+```
+So, the auto generated rows only contain 2 columns: the 'lcol' for the last-active date, and the 'rcol' for the title and link.
+
+Since base.html already has 'forum-container', and 'main' defined, and there are no sub columns to worry about here, the code is pretty straight-forward. I did add a nice little frame around the container, and a box shadow for each new post. I put the Tech Academy logo up there with a nice little underline as well. 

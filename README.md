@@ -80,9 +80,13 @@ The div 'forum-container' has within it the div 'main.' The {% block content %} 
     grid-gap: .50em; 
 }
 ```
-> Everything within the div 'main' will be right in the center of the page. In this case, nothing is defined for 'lside' and 'rside' so it consumes the entire viewport beneath the navbar. 
+
 
 !['image'](https://github.com/CreativeDave/Tech-Academy-Live-Project/blob/master/media/post-page1.png)
+
+
+> Everything within the div 'main' will be right in the center of the page. In this case, nothing is defined for 'lside' and 'rside' so it consumes the entire viewport beneath the navbar. 
+
 
 From the first bit of code I pasted, you'll see 'forum/thread_header.html' is included using a template tag. If we look at a snippet of code from that template, there's a div class 'post-body': 
 ```
